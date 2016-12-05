@@ -29,6 +29,10 @@
         <activity
             android:name=".AboutAppActivity"
             android:label="@string/title_activity_about_app"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SongTextActivity"
+            android:label="@string/title_activity_song_text"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
