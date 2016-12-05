@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">MusicGuitar</string>
+    <string name="action_settings">О приложении</string>
+    <string name="title_activity_song">Песни</string>
+    <string name="title_activity_edit">Редактирование</string>
+    <string name="edit_author_hint">Автор</string>
+    <string name="edit_song_hint">Название песни</string>
+    <string name="edit_text_song_hint">Текст песни</string>
+    <string name="title_activity_about_app">О приложении</string>
+    <string name="about_app_text">О приложении</string>
+</resources>
