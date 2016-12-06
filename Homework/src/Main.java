@@ -17,10 +17,11 @@ public class Main {
         public void run() {
 
             try {
-
-                for (int i = 0; i < 50; i++) {
+                int i = 0;
+                while (true) {
                     arr.add(i);
-                    Thread.sleep((long) (Math.random() * 2000));
+                    i++;
+                    Thread.sleep((long) (Math.random() * 1300));
                 }
 
             } catch (InterruptedException e) {
@@ -34,11 +35,12 @@ public class Main {
         public void run() {
 
             try {
-
-                for (int i = 0; i < 50; i++) {
+                int i = 0;
+                while (true) {
                     Thread.sleep(1000);
                     System.out.println(i);
                     arr.remove(i);
+                    i++;
                 }
 
             } catch (InterruptedException e) {
