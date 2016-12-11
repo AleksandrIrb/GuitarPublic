@@ -3,10 +3,10 @@ package alex.aleksandr.ru.musicguitar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 
 
 public class MusicListDb extends SQLiteOpenHelper {
@@ -56,23 +56,72 @@ public class MusicListDb extends SQLiteOpenHelper {
 
     }
 
-    public void addAuthor(String author) {
-        String sql = "INSERT INTO " + AUTHOR_TABLE_NAME +
-                " (" + AUTHOR_NAME +
-                ") VALUES (\"" + author + "\");";
-        getWritableDatabase().execSQL(sql);
-    }
-
-    public Cursor querySel() {
+    public Cursor querySelectAuthor(String args, String[] argInit) {
         Cursor cursor = getWritableDatabase().query(
                 AUTHOR_TABLE_NAME,
                 null,
-                "_id = ?",
-                new String[]{"1"},
+                args,
+                argInit,
                 null, null, null
         );
-
         return cursor;
     }
 
+    public Cursor querySelectSong( String args, String[] argsInit) {
+        Cursor cursor = getWritableDatabase().query(
+                SONG_TABLE_NAME,
+                null,
+                args,
+                argsInit,
+                null, null, null
+        );
+        return cursor;
+    }
+
+    public static String getAuthorName() {
+        return AUTHOR_NAME;
+    }
+
+    public static String getSongName() {
+        return SONG_NAME;
+    }
+
+    public static String getSongText() {
+        return SONG_TEXT;
+    }
+
+    public static String getSongAuthor() {
+        return SONG_AUTHOR;
+    }
+
+    public boolean addSongInDatabase(String author, String nameSong, String textSong) {
+
+        Cursor cursor = querySelectAuthor(AUTHOR_NAME + "= ?", new String[] {author});
+        cursor.moveToFirst();
+        int count = cursor.getCount();
+
+        if(count == 0) {
+            try {
+                String sqlInAuthor = "INSERT INTO " + AUTHOR_TABLE_NAME +
+                        " (" + AUTHOR_NAME +
+                        ") VALUES (\"" + author + "\");";
+                getWritableDatabase().execSQL(sqlInAuthor);
+            } catch (SQLException e) {
+            }
+        }
+
+        try {
+            String sqlInSongList = "INSERT INTO " + SONG_TABLE_NAME +
+                    " (" + SONG_NAME + ", " +
+                    SONG_TEXT + ", " + SONG_AUTHOR +
+                    ") VALUES (\"" + nameSong + "\", \"" + textSong +
+                    "\", \"" + author + "\");";
+            getWritableDatabase().execSQL(sqlInSongList);
+            return true;
+        } catch (SQLException e) {
+            return false;
+        }
+
+
+    }
 }

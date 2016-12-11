@@ -1,6 +1,7 @@
 package alex.aleksandr.ru.musicguitar;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -9,15 +10,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class SongTextActivity extends AppCompatActivity {
+
+    private MusicListDb db;
+    private TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_text);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         setSupportActionBar(toolbar);
+
+        db = new MusicListDb(this);
+        db.getWritableDatabase();
+        Cursor cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ? AND "
+                + MusicListDb.getSongName() + "= ?", new String[] {"new", "new"});
+        cursor.moveToFirst();
+        textView = (TextView) findViewById(R.id.textViewSongText);
+        textView.setText(cursor.getString(cursor.getColumnIndex(MusicListDb.getSongText())));
     }
 
     @Override
