@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
@@ -23,6 +22,7 @@ public class AuthorActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private MusicListDb db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +46,15 @@ public class AuthorActivity extends AppCompatActivity {
         db = new MusicListDb(this);
         db.getWritableDatabase();
 
+        // Generation value
+        try {
 
-        /*try {
-
-            for (int i = 0; i < 15; i++) {
-                db.addAuthor("NEW AUTHOR_" + i);
+            for (int i = 1; i < 16; i++) {
+                db.addSongInDatabase("Author_" + i, "NameSong_" + i, "textSong" + i);
             }
         } catch (SQLException e) {
-            Log.w("Warn", "Такие записи есть");
 
-        } finally { */
-
-
+        }
 
 
     }
@@ -67,7 +64,7 @@ public class AuthorActivity extends AppCompatActivity {
         super.onResume();
         recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Cursor cursor = db.querySelectAuthor(null,null);
+        Cursor cursor = db.querySelectAuthor(null, null);
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -108,6 +105,7 @@ public class AuthorActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent i = new Intent(AuthorActivity.this, SongActivity.class);
+            i.putExtra(SongActivity.EXTRA_ID_AUTHOR, textView.getText().toString());
             startActivity(i);
         }
     }

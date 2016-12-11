@@ -20,7 +20,6 @@ public class EditActivity extends AppCompatActivity {
     private Button addInDatabase;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,18 +38,17 @@ public class EditActivity extends AppCompatActivity {
                 String sn = songname.getText().toString();
                 String stxt = songtext.getText().toString();
 
-                if(!a.isEmpty() && !sn.isEmpty() && !stxt.isEmpty())
-                {
+                if (!a.isEmpty() && !sn.isEmpty() && !stxt.isEmpty()) {
 
                     MusicListDb db = new MusicListDb(EditActivity.this);
                     boolean isAddInList = db.addSongInDatabase(a, sn, stxt);
-                    if(isAddInList) {
+                    if (isAddInList) {
                         Toast.makeText(getApplicationContext(), "Запись добавлена", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Ошибка добавления", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(),"Заполните все поля", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -62,7 +60,6 @@ public class EditActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_edit, menu);
         return true;
     }
-
 
 
     @Override

@@ -1,17 +1,15 @@
 package alex.aleksandr.ru.musicguitar;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
 public class MusicListDb extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "musicdb.db";
+    private static final String DATABASE_NAME = "musicdblis.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String AUTHOR_TABLE_NAME = "authorsong";
@@ -39,7 +37,7 @@ public class MusicListDb extends SQLiteOpenHelper {
 
         String tableTwo = "CREATE TABLE " + SONG_TABLE_NAME + " (" +
                 ID_SONG + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SONG_NAME + " TEXT, " +
+                SONG_NAME + " TEXT UNIQUE, " +
                 SONG_TEXT + " TEXT, " +
                 SONG_AUTHOR + " TEXT, " +
                 "FOREIGN KEY (" + SONG_AUTHOR + ") REFERENCES " +
@@ -67,7 +65,7 @@ public class MusicListDb extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor querySelectSong( String args, String[] argsInit) {
+    public Cursor querySelectSong(String args, String[] argsInit) {
         Cursor cursor = getWritableDatabase().query(
                 SONG_TABLE_NAME,
                 null,
@@ -96,17 +94,17 @@ public class MusicListDb extends SQLiteOpenHelper {
 
     public boolean addSongInDatabase(String author, String nameSong, String textSong) {
 
-        Cursor cursor = querySelectAuthor(AUTHOR_NAME + "= ?", new String[] {author});
+        Cursor cursor = querySelectAuthor(AUTHOR_NAME + "= ?", new String[]{author});
         cursor.moveToFirst();
-        int count = cursor.getCount();
 
-        if(count == 0) {
+        if (cursor.getCount() == 0) {
             try {
                 String sqlInAuthor = "INSERT INTO " + AUTHOR_TABLE_NAME +
                         " (" + AUTHOR_NAME +
                         ") VALUES (\"" + author + "\");";
                 getWritableDatabase().execSQL(sqlInAuthor);
             } catch (SQLException e) {
+                return false;
             }
         }
 
