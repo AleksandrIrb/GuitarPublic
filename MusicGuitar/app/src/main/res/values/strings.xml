@@ -10,4 +10,7 @@
     <string name="about_app_text">О приложении</string>
     <string name="title_activity_song_text">Текст песни</string>
     <string name="name_button_add">Сохранить</string>
+    <string name="title_action_delete">Удалить запись?</string>
+    <string name="ok_action_delete">ОК</string>
+    <string name="cancel_action_delete">Отмена</string>
 </resources>

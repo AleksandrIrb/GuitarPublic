@@ -31,6 +31,7 @@ public class EditActivity extends AppCompatActivity {
         songname = (EditText) findViewById(R.id.editNameSong);
         songtext = (EditText) findViewById(R.id.editTextSong);
         addInDatabase = (Button) findViewById(R.id.buttonAdd);
+
         addInDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +44,7 @@ public class EditActivity extends AppCompatActivity {
                     MusicListDb db = new MusicListDb(EditActivity.this);
                     boolean isAddInList = db.addSongInDatabase(a, sn, stxt);
                     if (isAddInList) {
-                        Toast.makeText(getApplicationContext(), "Запись добавлена", Toast.LENGTH_SHORT).show();
+                        finish();
                     } else {
                         Toast.makeText(getApplicationContext(), "Ошибка добавления", Toast.LENGTH_SHORT).show();
                     }

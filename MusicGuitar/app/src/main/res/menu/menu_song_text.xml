@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="alex.aleksandr.ru.musicguitar.AuthorActivity">
     <item
+        android:id="@+id/menu_song_text_delete"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/action_settings"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/menu_song_text_edit"
         android:orderInCategory="100"
         android:icon="@drawable/ic_action_edit"

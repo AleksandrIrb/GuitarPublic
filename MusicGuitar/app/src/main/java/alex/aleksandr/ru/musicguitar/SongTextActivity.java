@@ -1,5 +1,6 @@
 package alex.aleksandr.ru.musicguitar;
 
+
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,16 +16,17 @@ public class SongTextActivity extends AppCompatActivity {
     private TextView textView;
 
     public static final String EXTRA_ID_SONG_TEXT = "alex.aleksandr.ru.musicguitar.extra_id_song_text";
+    public static final String EXTRA_ID_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_id_song_count";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_text);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         setSupportActionBar(toolbar);
 
         db = new MusicListDb(this);
-        db.getWritableDatabase();
         long getSongId = getIntent().getLongExtra(EXTRA_ID_SONG_TEXT, 0);
         Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(getSongId)});
         cursor.moveToFirst();
@@ -48,8 +50,13 @@ public class SongTextActivity extends AppCompatActivity {
             startActivity(i);
         } else if (id == R.id.menu_song_text_close) {
             finish();
+        } else if(id == R.id.menu_song_text_delete)
+        {
+            DialogWindow dialogWindow = new DialogWindow();
+            dialogWindow.show(getSupportFragmentManager(), "deleteList");
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 }

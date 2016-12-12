@@ -21,6 +21,7 @@ public class SongActivity extends AppCompatActivity {
     private MusicListDb db;
 
     private String nmAuthor;
+    private int count;
 
     public static final String EXTRA_ID_AUTHOR = "alex.aleksandr.ru.musicguitar.extra_id_author";
 
@@ -32,8 +33,6 @@ public class SongActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         db = new MusicListDb(this);
-        db.getWritableDatabase();
-
     }
 
     protected void onResume() {
@@ -42,6 +41,7 @@ public class SongActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         nmAuthor = getIntent().getStringExtra(EXTRA_ID_AUTHOR);
         Cursor cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{nmAuthor});
+        count = cursor.getCount();
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -65,6 +65,7 @@ public class SongActivity extends AppCompatActivity {
             cursor.moveToFirst();
             long idSong = cursor.getLong(cursor.getColumnIndex("_id"));
             i.putExtra(SongTextActivity.EXTRA_ID_SONG_TEXT, idSong);
+            i.putExtra(SongTextActivity.EXTRA_ID_SONG_COUNT, count);
             startActivity(i);
         }
     }
@@ -79,8 +80,7 @@ public class SongActivity extends AppCompatActivity {
 
         @Override
         public RecyclerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater li = getLayoutInflater();
-            View view = li.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
             return new RecyclerHolder(view);
         }
 
