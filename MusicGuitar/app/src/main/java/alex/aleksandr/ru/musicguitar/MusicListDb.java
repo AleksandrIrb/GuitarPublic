@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 
 public class MusicListDb extends SQLiteOpenHelper {
@@ -120,6 +121,28 @@ public class MusicListDb extends SQLiteOpenHelper {
             return false;
         }
 
+
+    }
+
+    public void deleteAuthor(String author) {
+        try {
+            String sql = "DELETE FROM " + AUTHOR_TABLE_NAME +
+                    " WHERE " + AUTHOR_NAME + "=\"" + author + "\";";
+            getWritableDatabase().execSQL(sql);
+        } catch (SQLException e) {
+            Log.e("Error deleteing author", e.toString());
+        }
+
+    }
+
+    public void deleteSong(long id) {
+        try {
+            String sql = "DELETE FROM " + SONG_TABLE_NAME +
+                    " WHERE _id=" + id +";";
+            getWritableDatabase().execSQL(sql);
+        } catch (SQLException e) {
+            Log.e("Error deleteing song", e.toString());
+        }
 
     }
 }

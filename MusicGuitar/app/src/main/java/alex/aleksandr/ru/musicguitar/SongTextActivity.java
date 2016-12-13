@@ -17,6 +17,8 @@ public class SongTextActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID_SONG_TEXT = "alex.aleksandr.ru.musicguitar.extra_id_song_text";
     public static final String EXTRA_ID_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_id_song_count";
+    private static int getCountAuthor;
+    private static long getSongId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +29,15 @@ public class SongTextActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         db = new MusicListDb(this);
-        long getSongId = getIntent().getLongExtra(EXTRA_ID_SONG_TEXT, 0);
+        getSongId = getIntent().getLongExtra(EXTRA_ID_SONG_TEXT, 0);
+        getCountAuthor = getIntent().getIntExtra(EXTRA_ID_SONG_COUNT, 0);
         Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(getSongId)});
         cursor.moveToFirst();
         textView = (TextView) findViewById(R.id.textViewSongText);
         textView.setText(cursor.getString(cursor.getColumnIndex(MusicListDb.getSongText())));
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,9 +59,27 @@ public class SongTextActivity extends AppCompatActivity {
         {
             DialogWindow dialogWindow = new DialogWindow();
             dialogWindow.show(getSupportFragmentManager(), "deleteList");
+            deleteList();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteList() {
+        if(getCountAuthor == 1) {
+
+            Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(getSongId)});
+            cursor.moveToFirst();
+            String author = cursor.getString(cursor.getColumnIndex(MusicListDb.getSongAuthor()));
+            db.deleteSong(getSongId);
+            db.deleteAuthor(author);
+            finish();
+
+        } else {
+            db.deleteSong(getSongId);
+            finish();
+        }
+
     }
 
 }
