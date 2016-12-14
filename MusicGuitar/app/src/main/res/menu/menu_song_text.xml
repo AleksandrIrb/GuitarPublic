@@ -6,19 +6,11 @@
     <item
         android:id="@+id/menu_song_text_delete"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_delete"
-        android:title="@string/action_settings"
-        app:showAsAction="always" />
+        android:title="@string/title_action_delete"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menu_song_text_edit"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_action_edit"
-        android:title="@string/action_settings"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/menu_song_text_close"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_close"
-        android:title="@string/action_settings"
-        app:showAsAction="always" />
+        android:title="@string/title_action_edit"
+        app:showAsAction="never" />
 </menu>

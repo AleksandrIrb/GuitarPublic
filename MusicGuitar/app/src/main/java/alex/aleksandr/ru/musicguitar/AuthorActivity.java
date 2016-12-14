@@ -30,13 +30,17 @@ public class AuthorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_author);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(AuthorActivity.this, EditActivity.class);
+                i.putExtra(EditActivity.EXTRA_IS_EDIT, false);
                 startActivity(i);
 
             }
@@ -50,7 +54,7 @@ public class AuthorActivity extends AppCompatActivity {
         try {
 
             for (int i = 1; i < 16; i++) {
-                db.addSongInDatabase("Author_" + i, "NameSong_" + i, "textSong" + i);
+                db.addListSong("Author_" + i, "NameSong_" + i, "textSong" + i);
             }
         } catch (SQLException e) {
 

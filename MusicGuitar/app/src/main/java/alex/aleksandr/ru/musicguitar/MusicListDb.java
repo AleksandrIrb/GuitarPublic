@@ -93,7 +93,23 @@ public class MusicListDb extends SQLiteOpenHelper {
         return SONG_AUTHOR;
     }
 
-    public boolean addSongInDatabase(String author, String nameSong, String textSong) {
+    public boolean addListSong(String author, String nameSong, String textSong) {
+
+        try {
+            String sqlInSongList = "INSERT INTO " + SONG_TABLE_NAME +
+                    " (" + SONG_NAME + ", " +
+                    SONG_TEXT + ", " + SONG_AUTHOR +
+                    ") VALUES (\"" + nameSong + "\", \"" + textSong +
+                    "\", \"" + author + "\");";
+            getWritableDatabase().execSQL(sqlInSongList);
+            return true;
+        } catch (SQLException e) {
+            Log.e("Error added song", e.toString());
+            return false;
+        }
+    }
+
+    public void addListAuthor(String author) {
 
         Cursor cursor = querySelectAuthor(AUTHOR_NAME + "= ?", new String[]{author});
         cursor.moveToFirst();
@@ -105,23 +121,9 @@ public class MusicListDb extends SQLiteOpenHelper {
                         ") VALUES (\"" + author + "\");";
                 getWritableDatabase().execSQL(sqlInAuthor);
             } catch (SQLException e) {
-                return false;
+                Log.e("Error added author", e.toString());
             }
         }
-
-        try {
-            String sqlInSongList = "INSERT INTO " + SONG_TABLE_NAME +
-                    " (" + SONG_NAME + ", " +
-                    SONG_TEXT + ", " + SONG_AUTHOR +
-                    ") VALUES (\"" + nameSong + "\", \"" + textSong +
-                    "\", \"" + author + "\");";
-            getWritableDatabase().execSQL(sqlInSongList);
-            return true;
-        } catch (SQLException e) {
-            return false;
-        }
-
-
     }
 
     public void deleteAuthor(String author) {
@@ -138,10 +140,34 @@ public class MusicListDb extends SQLiteOpenHelper {
     public void deleteSong(long id) {
         try {
             String sql = "DELETE FROM " + SONG_TABLE_NAME +
-                    " WHERE _id=" + id +";";
+                    " WHERE _id=" + id + ";";
             getWritableDatabase().execSQL(sql);
         } catch (SQLException e) {
             Log.e("Error deleteing song", e.toString());
+        }
+
+    }
+
+    public boolean updateListSong(String a, String sn, String stxt, long id, String oldAuthor) {
+        try {
+            String sql = "UPDATE " + SONG_TABLE_NAME +
+                    " SET " + SONG_NAME + "= ?, " +
+                    SONG_TEXT + "= ?, " +
+                    SONG_AUTHOR + "= ? WHERE _id= ?;";
+            Object[] args = new Object[]{sn, stxt, a, id};
+            getWritableDatabase().execSQL(sql, args);
+            addListAuthor(a);
+
+            Cursor cursor = querySelectSong(SONG_AUTHOR + "= ?", new String[]{oldAuthor});
+            cursor.moveToFirst();
+            if(cursor.getCount() == 0){
+                deleteAuthor(oldAuthor);
+            }
+
+            return true;
+        } catch (SQLException e) {
+            Log.e("Error update song", e.toString());
+            return false;
         }
 
     }
