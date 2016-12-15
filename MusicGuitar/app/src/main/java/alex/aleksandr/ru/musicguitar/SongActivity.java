@@ -16,36 +16,34 @@ public class SongActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
-    private MusicListDb db;
+    private Cursor cursor;
+    private String nameAuthor;
 
-    private String nmAuthor;
-    private int count;
-
-    public static final String EXTRA_ID_AUTHOR = "alex.aleksandr.ru.musicguitar.extra_id_author";
+    public static final String EXTRA_NAME_AUTHOR = "alex.aleksandr.ru.musicguitar.extra_id_author";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
-        nmAuthor = getIntent().getStringExtra(EXTRA_ID_AUTHOR);
+
+        nameAuthor = getIntent().getStringExtra(EXTRA_NAME_AUTHOR);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_song);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            setTitle(nmAuthor);
+            setTitle(nameAuthor);
         }
 
-        db = new MusicListDb(this);
+
     }
 
     protected void onResume() {
         super.onResume();
+        MusicListDb db = MusicListDb.getMusicDataBase(this);
+        cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{nameAuthor});
         recyclerView = (RecyclerView) findViewById(R.id.song_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        Cursor cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{nmAuthor});
-        count = cursor.getCount();
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -64,12 +62,8 @@ public class SongActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent i = new Intent(SongActivity.this, SongTextActivity.class);
-            Cursor cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ? AND "
-                    + MusicListDb.getSongName() + "= ?", new String[]{nmAuthor, textView.getText().toString()});
-            cursor.moveToFirst();
-            long idSong = cursor.getLong(cursor.getColumnIndex("_id"));
-            i.putExtra(SongTextActivity.EXTRA_ID_SONG_ID, idSong);
-            i.putExtra(SongTextActivity.EXTRA_ID_SONG_COUNT, count);
+            i.putExtra(SongTextActivity.EXTRA_ID_SONG_ID, Song.fromCursor(cursor).getIdSong());
+            i.putExtra(SongTextActivity.EXTRA_ID_SONG_COUNT, cursor.getCount());
             startActivity(i);
         }
     }
@@ -91,8 +85,7 @@ public class SongActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(RecyclerHolder holder, int position) {
             cursor.moveToPosition(position);
-            String nameAuthor = cursor.getString(cursor.getColumnIndex(MusicListDb.getSongName()));
-            holder.textView.setText(nameAuthor);
+            holder.textView.setText(Song.fromCursor(cursor).getName());
         }
 
         @Override

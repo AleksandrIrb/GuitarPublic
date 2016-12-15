@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,10 +18,7 @@ import android.widget.TextView;
 
 public class AuthorActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerAdapter recyclerAdapter;
     private MusicListDb db;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +42,8 @@ public class AuthorActivity extends AppCompatActivity {
             }
         });
 
-
-        db = new MusicListDb(this);
-        db.getWritableDatabase();
+        db = MusicListDb.getMusicDataBase(this);
+        //db.getWritableDatabase();
 
         // Generation value
         try {
@@ -59,40 +54,31 @@ public class AuthorActivity extends AppCompatActivity {
         } catch (SQLException e) {
 
         }
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Cursor cursor = db.querySelectAuthor(null, null);
-        recyclerAdapter = new RecyclerAdapter(cursor);
+        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_author, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (item.getItemId() == R.id.action_settings) {
             Intent i = new Intent(AuthorActivity.this, AboutAppActivity.class);
             startActivity(i);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -109,7 +95,7 @@ public class AuthorActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent i = new Intent(AuthorActivity.this, SongActivity.class);
-            i.putExtra(SongActivity.EXTRA_ID_AUTHOR, textView.getText().toString());
+            i.putExtra(SongActivity.EXTRA_NAME_AUTHOR, textView.getText().toString());
             startActivity(i);
         }
     }
@@ -124,16 +110,14 @@ public class AuthorActivity extends AppCompatActivity {
 
         @Override
         public RecyclerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater li = getLayoutInflater();
-            View view = li.inflate(android.R.layout.simple_list_item_1, parent, false);
+            View view = getLayoutInflater().inflate(android.R.layout.simple_list_item_1, parent, false);
             return new RecyclerHolder(view);
         }
 
         @Override
         public void onBindViewHolder(RecyclerHolder holder, int position) {
             cursor.moveToPosition(position);
-            String nameAuthor = cursor.getString(cursor.getColumnIndex(MusicListDb.getAuthorName()));
-            holder.textView.setText(nameAuthor);
+            holder.textView.setText(Author.fromCursor(cursor).getName());
         }
 
         @Override

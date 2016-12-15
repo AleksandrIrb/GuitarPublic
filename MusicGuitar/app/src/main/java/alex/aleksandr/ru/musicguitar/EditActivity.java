@@ -40,7 +40,7 @@ public class EditActivity extends AppCompatActivity {
         songname = (EditText) findViewById(R.id.editNameSong);
         songtext = (EditText) findViewById(R.id.editTextSong);
         addInDatabase = (Button) findViewById(R.id.buttonAdd);
-        db = new MusicListDb(this);
+        db = MusicListDb.getMusicDataBase(this);
 
         isEdit = getIntent().getBooleanExtra(EXTRA_IS_EDIT, false);
         id = getIntent().getLongExtra(EXTRA_ID_SONG_EDIT_ID, 0);
@@ -48,11 +48,10 @@ public class EditActivity extends AppCompatActivity {
         if (isEdit) {
             Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(id)});
             cursor.moveToFirst();
-            oldAuthor = cursor.getString(cursor.getColumnIndex(MusicListDb.getSongAuthor()));
+            oldAuthor = SongText.fromCursor(cursor).getAuthorName();
             author.setText(oldAuthor);
-            songname.setText(cursor.getString(cursor.getColumnIndex(MusicListDb.getSongName())));
-            songtext.setText(cursor.getString(cursor.getColumnIndex(MusicListDb.getSongText())));
-
+            songname.setText(SongText.fromCursor(cursor).getName());
+            songtext.setText(SongText.fromCursor(cursor).getTextSong());
         }
 
         addInDatabase.setOnClickListener(new View.OnClickListener() {

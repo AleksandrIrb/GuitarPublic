@@ -10,6 +10,8 @@ import android.util.Log;
 
 public class MusicListDb extends SQLiteOpenHelper {
 
+    private static MusicListDb musicListDb;
+
     private static final String DATABASE_NAME = "musicdblis.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -25,8 +27,18 @@ public class MusicListDb extends SQLiteOpenHelper {
     private static final String SONG_AUTHOR = "songauthor";
 
 
-    public MusicListDb(Context context) {
+    private MusicListDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static MusicListDb getMusicDataBase(Context context)
+    {
+        if(musicListDb == null)
+        {
+            musicListDb = new MusicListDb(context);
+            musicListDb.getWritableDatabase();
+        }
+        return musicListDb;
     }
 
     @Override
@@ -61,7 +73,8 @@ public class MusicListDb extends SQLiteOpenHelper {
                 null,
                 args,
                 argInit,
-                null, null, null
+                null, null,
+                AUTHOR_NAME +" ASC"
         );
         return cursor;
     }
@@ -72,7 +85,8 @@ public class MusicListDb extends SQLiteOpenHelper {
                 null,
                 args,
                 argsInit,
-                null, null, null
+                null, null,
+                SONG_NAME +" ASC"
         );
         return cursor;
     }

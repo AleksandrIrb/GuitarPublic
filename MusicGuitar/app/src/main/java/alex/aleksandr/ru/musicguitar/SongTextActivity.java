@@ -14,8 +14,8 @@ public class SongTextActivity extends AppCompatActivity {
 
     private MusicListDb db;
     private TextView textView;
-    private static int getCountAuthor;
-    private static long getSongId;
+    private int CountAuthor;
+    private long SongId;
     private Cursor cursor;
 
     public static final String EXTRA_ID_SONG_ID = "alex.aleksandr.ru.musicguitar.extra_id_song_text";
@@ -27,29 +27,26 @@ public class SongTextActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_text);
 
-        db = new MusicListDb(this);
-        getSongId = getIntent().getLongExtra(EXTRA_ID_SONG_ID, 0);
-        getCountAuthor = getIntent().getIntExtra(EXTRA_ID_SONG_COUNT, 0);
-        cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(getSongId)});
+        db = MusicListDb.getMusicDataBase(this);
+        textView = (TextView) findViewById(R.id.textViewSongText);
+        SongId = getIntent().getLongExtra(EXTRA_ID_SONG_ID, 0);
+        CountAuthor = getIntent().getIntExtra(EXTRA_ID_SONG_COUNT, 0);
+        cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(SongId)});
         cursor.moveToFirst();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            setTitle(cursor.getString(cursor.getColumnIndex(MusicListDb.getSongName())));
+            setTitle(SongText.fromCursor(cursor).getName());
+            toolbar.setSubtitle(SongText.fromCursor(cursor).getAuthorName());
         }
-
-        textView = (TextView) findViewById(R.id.textViewSongText);
-
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        textView.setText(cursor.getString(cursor.getColumnIndex(MusicListDb.getSongText())));
-
+        textView.setText(SongText.fromCursor(cursor).getTextSong());
     }
 
     @Override
@@ -62,16 +59,14 @@ public class SongTextActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_song_text_edit) {
+        if (item.getItemId() == R.id.menu_song_text_edit) {
             Intent i = new Intent(SongTextActivity.this, EditActivity.class);
             i.putExtra(EditActivity.EXTRA_IS_EDIT, true);
-            i.putExtra(EditActivity.EXTRA_ID_SONG_EDIT_ID, getSongId);
+            i.putExtra(EditActivity.EXTRA_ID_SONG_EDIT_ID, SongId);
             startActivity(i);
         } else if (id == android.R.id.home) {
             finish();
-        } else if(id == R.id.menu_song_text_delete)
-        {
+        } else if (id == R.id.menu_song_text_delete) {
             deleteList();
         }
 
@@ -79,14 +74,14 @@ public class SongTextActivity extends AppCompatActivity {
     }
 
     public void deleteList() {
-        if(getCountAuthor == 1) {
-            String author = cursor.getString(cursor.getColumnIndex(MusicListDb.getSongAuthor()));
-            db.deleteSong(getSongId);
-            db.deleteAuthor(author);
+        if (CountAuthor == 1) {
+
+            db.deleteSong(SongId);
+            db.deleteAuthor(SongText.fromCursor(cursor).getAuthorName());
             finish();
 
         } else {
-            db.deleteSong(getSongId);
+            db.deleteSong(SongId);
             finish();
         }
 
