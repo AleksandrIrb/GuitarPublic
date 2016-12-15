@@ -62,8 +62,8 @@ public class SongActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent i = new Intent(SongActivity.this, SongTextActivity.class);
-            i.putExtra(SongTextActivity.EXTRA_ID_SONG_ID, Song.fromCursor(cursor).getIdSong());
-            i.putExtra(SongTextActivity.EXTRA_ID_SONG_COUNT, cursor.getCount());
+            i.putExtra(SongTextActivity.EXTRA_ID_SONG, Song.fromCursor(cursor).getIdSong());
+            i.putExtra(SongTextActivity.EXTRA_SONG_COUNT, cursor.getCount());
             startActivity(i);
         }
     }

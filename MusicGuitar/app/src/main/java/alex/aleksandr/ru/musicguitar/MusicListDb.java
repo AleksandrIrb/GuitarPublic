@@ -74,7 +74,7 @@ public class MusicListDb extends SQLiteOpenHelper {
                 args,
                 argInit,
                 null, null,
-                AUTHOR_NAME +" ASC"
+                AUTHOR_NAME +" DESC"
         );
         return cursor;
     }
@@ -86,7 +86,7 @@ public class MusicListDb extends SQLiteOpenHelper {
                 args,
                 argsInit,
                 null, null,
-                SONG_NAME +" ASC"
+                SONG_NAME +" DESC"
         );
         return cursor;
     }

@@ -18,8 +18,8 @@ public class SongTextActivity extends AppCompatActivity {
     private long SongId;
     private Cursor cursor;
 
-    public static final String EXTRA_ID_SONG_ID = "alex.aleksandr.ru.musicguitar.extra_id_song_text";
-    public static final String EXTRA_ID_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_id_song_count";
+    public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
+    public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
 
 
     @Override
@@ -29,8 +29,8 @@ public class SongTextActivity extends AppCompatActivity {
 
         db = MusicListDb.getMusicDataBase(this);
         textView = (TextView) findViewById(R.id.textViewSongText);
-        SongId = getIntent().getLongExtra(EXTRA_ID_SONG_ID, 0);
-        CountAuthor = getIntent().getIntExtra(EXTRA_ID_SONG_COUNT, 0);
+        SongId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
+        CountAuthor = getIntent().getIntExtra(EXTRA_SONG_COUNT, 0);
         cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(SongId)});
         cursor.moveToFirst();
 
@@ -62,7 +62,7 @@ public class SongTextActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_song_text_edit) {
             Intent i = new Intent(SongTextActivity.this, EditActivity.class);
             i.putExtra(EditActivity.EXTRA_IS_EDIT, true);
-            i.putExtra(EditActivity.EXTRA_ID_SONG_EDIT_ID, SongId);
+            i.putExtra(EditActivity.EXTRA_SONG_EDIT, SongId);
             startActivity(i);
         } else if (id == android.R.id.home) {
             finish();

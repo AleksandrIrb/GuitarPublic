@@ -19,6 +19,7 @@ import android.widget.TextView;
 public class AuthorActivity extends AppCompatActivity {
 
     private MusicListDb db;
+    private Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,14 @@ public class AuthorActivity extends AppCompatActivity {
         });
 
         db = MusicListDb.getMusicDataBase(this);
-        //db.getWritableDatabase();
 
         // Generation value
         try {
 
             for (int i = 1; i < 16; i++) {
+                db.addListAuthor("Author_" + i);
                 db.addListSong("Author_" + i, "NameSong_" + i, "textSong" + i);
+
             }
         } catch (SQLException e) {
 
@@ -61,7 +63,7 @@ public class AuthorActivity extends AppCompatActivity {
         super.onResume();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Cursor cursor = db.querySelectAuthor(null, null);
+        cursor = db.querySelectAuthor(null, null);
         RecyclerAdapter recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
     }
@@ -95,7 +97,7 @@ public class AuthorActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             Intent i = new Intent(AuthorActivity.this, SongActivity.class);
-            i.putExtra(SongActivity.EXTRA_NAME_AUTHOR, textView.getText().toString());
+            i.putExtra(SongActivity.EXTRA_NAME_AUTHOR, Author.fromCursor(cursor).getName());
             startActivity(i);
         }
     }

@@ -22,8 +22,8 @@ public class EditActivity extends AppCompatActivity {
     private MusicListDb db;
     private String oldAuthor;
 
-    public static final String EXTRA_IS_EDIT = "alex.aleksandr.ru.musicguitar.extra_id_author";
-    public static final String EXTRA_ID_SONG_EDIT_ID = "alex.aleksandr.ru.musicguitar.extra_id_song_text";
+    public static final String EXTRA_IS_EDIT = "alex.aleksandr.ru.musicguitar.extra_is_edit";
+    public static final String EXTRA_SONG_EDIT = "alex.aleksandr.ru.musicguitar.extra_song_edit";
 
 
     @Override
@@ -43,7 +43,7 @@ public class EditActivity extends AppCompatActivity {
         db = MusicListDb.getMusicDataBase(this);
 
         isEdit = getIntent().getBooleanExtra(EXTRA_IS_EDIT, false);
-        id = getIntent().getLongExtra(EXTRA_ID_SONG_EDIT_ID, 0);
+        id = getIntent().getLongExtra(EXTRA_SONG_EDIT, 0);
 
         if (isEdit) {
             Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(id)});
