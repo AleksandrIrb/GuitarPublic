@@ -12,7 +12,7 @@ public class MusicListDb extends SQLiteOpenHelper {
 
     private static MusicListDb musicListDb;
 
-    private static final String DATABASE_NAME = "musicdblis.db";
+    private static final String DATABASE_NAME = "musiclistdb.db";
     private static final int DATABASE_VERSION = 1;
 
     private static final String AUTHOR_TABLE_NAME = "authorsong";
@@ -33,11 +33,14 @@ public class MusicListDb extends SQLiteOpenHelper {
 
     public static MusicListDb getMusicDataBase(Context context)
     {
+
         if(musicListDb == null)
         {
             musicListDb = new MusicListDb(context);
             musicListDb.getWritableDatabase();
         }
+        musicListDb.getReadableDatabase();
+
         return musicListDb;
     }
 
@@ -68,25 +71,23 @@ public class MusicListDb extends SQLiteOpenHelper {
     }
 
     public Cursor querySelectAuthor(String args, String[] argInit) {
-        Cursor cursor = getWritableDatabase().query(
+        Cursor cursor = getReadableDatabase().query(
                 AUTHOR_TABLE_NAME,
                 null,
                 args,
                 argInit,
-                null, null,
-                AUTHOR_NAME +" DESC"
+                null, null, null
         );
         return cursor;
     }
 
     public Cursor querySelectSong(String args, String[] argsInit) {
-        Cursor cursor = getWritableDatabase().query(
+        Cursor cursor = getReadableDatabase().query(
                 SONG_TABLE_NAME,
                 null,
                 args,
                 argsInit,
-                null, null,
-                SONG_NAME +" DESC"
+                null, null, null
         );
         return cursor;
     }

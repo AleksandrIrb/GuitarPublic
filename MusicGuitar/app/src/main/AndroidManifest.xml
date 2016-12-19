@@ -19,20 +19,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SongActivity"
-            android:label="@string/title_activity_song"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".EditActivity"
             android:label="@string/title_activity_edit"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AboutAppActivity"
+            android:name=".HelpActivity"
             android:label="@string/title_activity_about_app"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SongTextActivity"
             android:label="@string/title_activity_song_text"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ContainerActivity"
+            android:label="@string/title_activity_container"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

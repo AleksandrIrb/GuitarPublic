@@ -13,8 +13,8 @@
     tools:context="alex.aleksandr.ru.musicguitar.EditActivity"
     tools:showIn="@layout/activity_edit">
 
-    <Button
-        android:id="@+id/buttonAdd"
+    <EditText
+        android:id="@+id/editTextSong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -22,50 +22,43 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:text="@string/name_button_add" />
-
-    <EditText
-        android:id="@+id/editNameSong"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editNameAuthor"
-        android:layout_marginTop="14dp"
+        android:layout_below="@+id/buttonAdd"
         android:ems="10"
-        android:hint="@string/edit_song_hint"
-        android:inputType="textPersonName"
-        android:maxLength="255" />
+        android:gravity="top"
+        android:hint="@string/edit_text_song_hint"
+        android:inputType="textMultiLine" />
 
     <EditText
         android:id="@+id/editNameAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/editTextSong"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:ems="10"
         android:hint="@string/edit_author_hint"
         android:inputType="textPersonName"
         android:maxLength="255" />
 
     <EditText
-        android:id="@+id/editTextSong"
+        android:id="@+id/editNameSong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonAdd"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/editNameSong"
-        android:layout_marginTop="21dp"
+        android:layout_above="@+id/editTextSong"
+        android:layout_toLeftOf="@+id/buttonAdd"
+        android:layout_toRightOf="@+id/editNameAuthor"
+        android:layout_toStartOf="@+id/buttonAdd"
         android:ems="10"
-        android:gravity="top"
-        android:hint="@string/edit_text_song_hint"
-        android:inputType="textMultiLine" />
+        android:hint="@string/edit_song_hint"
+        android:inputType="textPersonName"
+        android:maxLength="255" />
+
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/name_button_add" />
 </RelativeLayout>

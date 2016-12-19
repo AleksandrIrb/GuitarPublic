@@ -4,33 +4,51 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-public class AuthorActivity extends AppCompatActivity {
+public class AuthorActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String EXTRA_NAME_AUTHOR = "alex.aleksandr.ru.musicguitar.extra_name_author";
 
     private MusicListDb db;
     private Cursor cursor;
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
+    private DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_author);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        db = MusicListDb.getMusicDataBase(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
+                    drawerLayout, toolbar, R.string.app_name, R.string.app_name);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
         }
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
+        navigationView.setNavigationItemSelectedListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -43,46 +61,41 @@ public class AuthorActivity extends AppCompatActivity {
             }
         });
 
-        db = MusicListDb.getMusicDataBase(this);
-
-        // Generation value
-        try {
-
-            for (int i = 1; i < 16; i++) {
-                db.addListAuthor("Author_" + i);
-                db.addListSong("Author_" + i, "NameSong_" + i, "textSong" + i);
-
-            }
-        } catch (SQLException e) {
-
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         cursor = db.querySelectAuthor(null, null);
-        RecyclerAdapter recyclerAdapter = new RecyclerAdapter(cursor);
+        recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_author, menu);
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.show_f1: {
+                Intent i = new Intent(AuthorActivity.this, HelpActivity.class);
+                startActivity(i);
+                break;
+            }
+            case R.id.show_f2: {
+                AboutAppFragment dialogWindow = new AboutAppFragment();
+                dialogWindow.show(getSupportFragmentManager(), "abAppFragment");
+                break;
+            }
+            case R.id.out_app: {
+                finish();
+                break;
+            }
+        }
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (item.getItemId() == R.id.action_settings) {
-            Intent i = new Intent(AuthorActivity.this, AboutAppActivity.class);
-            startActivity(i);
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -96,9 +109,10 @@ public class AuthorActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            Intent i = new Intent(AuthorActivity.this, SongActivity.class);
-            i.putExtra(SongActivity.EXTRA_NAME_AUTHOR, Author.fromCursor(cursor).getName());
+            Intent i = new Intent(AuthorActivity.this, ContainerActivity.class);
+            i.putExtra(EXTRA_NAME_AUTHOR, textView.getText().toString());
             startActivity(i);
+            //Toast.makeText(AuthorActivity.this, String.valueOf(Author.fromCursor(cursor).getId()), Toast.LENGTH_SHORT).show();
         }
     }
 

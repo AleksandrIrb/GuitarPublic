@@ -63,11 +63,10 @@ public class EditActivity extends AppCompatActivity {
 
                 if (!a.isEmpty() && !sn.isEmpty() && !stxt.isEmpty()) {
 
-                    boolean isYesAction;
 
                     if (isEdit) {
-                        isYesAction = db.updateListSong(a, sn, stxt, id, oldAuthor);
-                        if (isYesAction) {
+                        boolean isYesUpdate = db.updateListSong(a, sn, stxt, id, oldAuthor);
+                        if (isYesUpdate) {
                             finish();
                         } else {
                             Toast.makeText(getApplicationContext(), "Ошибка обновления данных", Toast.LENGTH_SHORT).show();
@@ -75,8 +74,8 @@ public class EditActivity extends AppCompatActivity {
 
                     } else {
                         db.addListAuthor(a);
-                        isYesAction = db.addListSong(a, sn, stxt);
-                        if (isYesAction) {
+                        boolean isYesAdd = db.addListSong(a, sn, stxt);
+                        if (isYesAdd) {
                             finish();
                         } else {
                             Toast.makeText(getApplicationContext(), "Ошибка добавления данных", Toast.LENGTH_SHORT).show();

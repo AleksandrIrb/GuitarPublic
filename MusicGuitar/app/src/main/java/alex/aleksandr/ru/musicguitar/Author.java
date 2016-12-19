@@ -8,6 +8,7 @@ public class Author {
     private String name;
     private long id;
 
+
     private Author(long id, String name) {
         this.name = name;
         this.id = id;
@@ -28,4 +29,5 @@ public class Author {
     String getName() {
         return name;
     }
+
 }

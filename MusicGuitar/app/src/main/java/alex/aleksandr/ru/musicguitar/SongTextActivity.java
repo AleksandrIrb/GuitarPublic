@@ -17,6 +17,7 @@ public class SongTextActivity extends AppCompatActivity {
     private int CountAuthor;
     private long SongId;
     private Cursor cursor;
+    private Toolbar toolbar;
 
     public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
     public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
@@ -31,21 +32,25 @@ public class SongTextActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.textViewSongText);
         SongId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
         CountAuthor = getIntent().getIntExtra(EXTRA_SONG_COUNT, 0);
-        cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(SongId)});
-        cursor.moveToFirst();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            setTitle(SongText.fromCursor(cursor).getName());
-            toolbar.setSubtitle(SongText.fromCursor(cursor).getAuthorName());
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(SongId)});
+        cursor.moveToFirst();
+
+        if (toolbar != null) {
+            setTitle(SongText.fromCursor(cursor).getName());
+            toolbar.setSubtitle(SongText.fromCursor(cursor).getAuthorName());
+        }
+
         textView.setText(SongText.fromCursor(cursor).getTextSong());
     }
 

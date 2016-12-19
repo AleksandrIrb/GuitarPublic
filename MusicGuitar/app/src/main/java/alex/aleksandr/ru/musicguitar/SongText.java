@@ -1,7 +1,6 @@
 package alex.aleksandr.ru.musicguitar;
 
 
-
 import android.database.Cursor;
 
 
@@ -27,7 +26,7 @@ public class SongText {
         String authorName = song.getString(song.getColumnIndex(MusicListDb.getSongAuthor()));
         String textSong = song.getString(song.getColumnIndex(MusicListDb.getSongText()));
 
-        return new SongText(idSong,name,textSong,authorName);
+        return new SongText(idSong, name, textSong, authorName);
     }
 
     public long getIdSong() {
