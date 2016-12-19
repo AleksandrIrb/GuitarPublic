@@ -100,6 +100,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView textView;
+        private Cursor c;
+        private int positionHolder;
 
         private RecyclerHolder(View itemView) {
             super(itemView);
@@ -109,10 +111,11 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
         @Override
         public void onClick(View view) {
+            c = cursor;
+            c.moveToPosition(positionHolder);
             Intent i = new Intent(AuthorActivity.this, ContainerActivity.class);
-            i.putExtra(EXTRA_NAME_AUTHOR, textView.getText().toString());
+            i.putExtra(EXTRA_NAME_AUTHOR, Author.fromCursor(cursor).getName());
             startActivity(i);
-            //Toast.makeText(AuthorActivity.this, String.valueOf(Author.fromCursor(cursor).getId()), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -134,6 +137,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         public void onBindViewHolder(RecyclerHolder holder, int position) {
             cursor.moveToPosition(position);
             holder.textView.setText(Author.fromCursor(cursor).getName());
+            holder.positionHolder = position;
         }
 
         @Override

@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by alex on 18.12.16.
@@ -24,7 +23,6 @@ public class SongListFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
-    private Author author;
     private String nameAuthor;
 
 
@@ -37,28 +35,27 @@ public class SongListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-
         nameAuthor = getArguments().getString(EXTRA_NAME_AUTHOR_FRAGMENT);
         View view = inflater.inflate(R.layout.fragment_song, container, false);
         MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
         cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{nameAuthor});
-        recyclerView = (RecyclerView) view.findViewById(R.id.fragment_song_recycler_view);
-
-        recyclerAdapter = new RecyclerAdapter(cursor);
-        recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
+        recyclerView = (RecyclerView) getView().findViewById(R.id.fragment_song_recycler_view);
+        recyclerAdapter = new RecyclerAdapter(cursor);
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView textView;
+        private Cursor c;
+        private int positionHolder;
 
         private RecyclerHolder(View itemView) {
             super(itemView);
@@ -68,9 +65,11 @@ public class SongListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
+            c = cursor;
+            c.moveToPosition(positionHolder);
             Intent i = new Intent(getActivity(), SongTextActivity.class);
-            i.putExtra(SongTextActivity.EXTRA_ID_SONG, Song.fromCursor(cursor).getIdSong());
-            i.putExtra(SongTextActivity.EXTRA_SONG_COUNT, cursor.getCount());
+            i.putExtra(SongTextActivity.EXTRA_ID_SONG, Song.fromCursor(c).getIdSong());
+            i.putExtra(SongTextActivity.EXTRA_SONG_COUNT, c.getCount());
             startActivity(i);
         }
     }
@@ -95,6 +94,7 @@ public class SongListFragment extends Fragment {
         public void onBindViewHolder(RecyclerHolder holder, int position) {
             cursor.moveToPosition(position);
             holder.textView.setText(Song.fromCursor(cursor).getName());
+            holder.positionHolder = position;
         }
 
         @Override
