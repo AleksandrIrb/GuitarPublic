@@ -13,6 +13,9 @@ import android.widget.Toast;
 
 public class EditActivity extends AppCompatActivity {
 
+    public static final String EXTRA_IS_EDIT = "alex.aleksandr.ru.musicguitar.extra_is_edit";
+    public static final String EXTRA_SONG_EDIT = "alex.aleksandr.ru.musicguitar.extra_song_edit";
+
     private EditText author;
     private EditText songname;
     private EditText songtext;
@@ -21,9 +24,6 @@ public class EditActivity extends AppCompatActivity {
     private long id;
     private MusicListDb db;
     private String oldAuthor;
-
-    public static final String EXTRA_IS_EDIT = "alex.aleksandr.ru.musicguitar.extra_is_edit";
-    public static final String EXTRA_SONG_EDIT = "alex.aleksandr.ru.musicguitar.extra_song_edit";
 
 
     @Override
@@ -48,10 +48,11 @@ public class EditActivity extends AppCompatActivity {
         if (isEdit) {
             Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(id)});
             cursor.moveToFirst();
-            oldAuthor = SongText.fromCursor(cursor).getAuthorName();
+            SongText songText = SongText.fromCursor(cursor);
+            oldAuthor = songText.getAuthorName();
             author.setText(oldAuthor);
-            songname.setText(SongText.fromCursor(cursor).getName());
-            songtext.setText(SongText.fromCursor(cursor).getTextSong());
+            songname.setText(songText.getName());
+            songtext.setText(songText.getTextSong());
         }
 
         addInDatabase.setOnClickListener(new View.OnClickListener() {

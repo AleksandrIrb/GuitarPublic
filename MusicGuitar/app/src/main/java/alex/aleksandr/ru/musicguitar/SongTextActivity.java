@@ -12,15 +12,15 @@ import android.widget.TextView;
 
 public class SongTextActivity extends AppCompatActivity {
 
+    public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
+    public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
+
     private MusicListDb db;
     private TextView textView;
     private int CountAuthor;
     private long SongId;
     private Cursor cursor;
     private Toolbar toolbar;
-
-    public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
-    public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
 
 
     @Override
@@ -43,7 +43,7 @@ public class SongTextActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(SongId)});
+        cursor = db.querySongById(SongId);
         cursor.moveToFirst();
 
         if (toolbar != null) {

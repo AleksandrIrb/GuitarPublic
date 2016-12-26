@@ -9,20 +9,17 @@ public class Song {
     private long idSong;
     private String authorName;
 
+    static Song fromCursor(Cursor song) {
+        String name = song.getString(song.getColumnIndex(MusicListDb.getSongName()));
+        long idSong = song.getLong(song.getColumnIndex("_id"));
+        String authorName = song.getString(song.getColumnIndex(MusicListDb.getSongAuthor()));
+        return new Song(idSong, name, authorName);
+    }
 
     private Song(long idSong, String name, String authorName) {
         this.name = name;
         this.idSong = idSong;
         this.authorName = authorName;
-    }
-
-    static Song fromCursor(Cursor song) {
-
-        String name = song.getString(song.getColumnIndex(MusicListDb.getSongName()));
-        long idSong = song.getLong(song.getColumnIndex("_id"));
-        String authorName = song.getString(song.getColumnIndex(MusicListDb.getSongAuthor()));
-
-        return new Song(idSong, name, authorName);
     }
 
     public long getIdSong() {

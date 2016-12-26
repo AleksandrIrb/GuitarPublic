@@ -34,10 +34,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_author);
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         db = MusicListDb.getMusicDataBase(this);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -66,7 +64,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onResume() {
         super.onResume();
-        cursor = db.querySelectAuthor(null, null);
+        cursor = db.queryAuthorByName();
         recyclerView = (RecyclerView) findViewById(R.id.author_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerAdapter = new RecyclerAdapter(cursor);

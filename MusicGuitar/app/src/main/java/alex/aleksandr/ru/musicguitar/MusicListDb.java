@@ -10,8 +10,6 @@ import android.util.Log;
 
 public class MusicListDb extends SQLiteOpenHelper {
 
-    private static MusicListDb musicListDb;
-
     private static final String DATABASE_NAME = "musiclistdb.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -26,16 +24,16 @@ public class MusicListDb extends SQLiteOpenHelper {
     private static final String SONG_TEXT = "songtext";
     private static final String SONG_AUTHOR = "songauthor";
 
+    private static MusicListDb musicListDb;
+
 
     private MusicListDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static MusicListDb getMusicDataBase(Context context)
-    {
+    public static MusicListDb getMusicDataBase(Context context) {
 
-        if(musicListDb == null)
-        {
+        if (musicListDb == null) {
             musicListDb = new MusicListDb(context);
             musicListDb.getWritableDatabase();
         }
@@ -69,6 +67,22 @@ public class MusicListDb extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
     }
+
+    public Cursor queryAuthorByName() {
+        Cursor c = querySelectAuthor(null, null);
+        return c;
+    }
+
+    public Cursor querySongById(long id) {
+        Cursor c = querySelectSong("_id= ?", new String[]{String.valueOf(id)});
+        return c;
+    }
+
+    public Cursor querySongByAuthorName(String name) {
+        Cursor c = querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{name});
+        return c;
+    }
+
 
     public Cursor querySelectAuthor(String args, String[] argInit) {
         Cursor cursor = getReadableDatabase().query(
@@ -175,7 +189,7 @@ public class MusicListDb extends SQLiteOpenHelper {
 
             Cursor cursor = querySelectSong(SONG_AUTHOR + "= ?", new String[]{oldAuthor});
             cursor.moveToFirst();
-            if(cursor.getCount() == 0){
+            if (cursor.getCount() == 0) {
                 deleteAuthor(oldAuthor);
             }
 

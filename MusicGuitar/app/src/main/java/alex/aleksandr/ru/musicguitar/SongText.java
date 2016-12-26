@@ -11,6 +11,13 @@ public class SongText {
     private String authorName;
     private String textSong;
 
+    static SongText fromCursor(Cursor song) {
+        String name = song.getString(song.getColumnIndex(MusicListDb.getSongName()));
+        long idSong = song.getLong(song.getColumnIndex("_id"));
+        String authorName = song.getString(song.getColumnIndex(MusicListDb.getSongAuthor()));
+        String textSong = song.getString(song.getColumnIndex(MusicListDb.getSongText()));
+        return new SongText(idSong, name, textSong, authorName);
+    }
 
     private SongText(long idSong, String name, String textSong, String authorName) {
         this.name = name;
@@ -19,15 +26,6 @@ public class SongText {
         this.textSong = textSong;
     }
 
-    static SongText fromCursor(Cursor song) {
-
-        String name = song.getString(song.getColumnIndex(MusicListDb.getSongName()));
-        long idSong = song.getLong(song.getColumnIndex("_id"));
-        String authorName = song.getString(song.getColumnIndex(MusicListDb.getSongAuthor()));
-        String textSong = song.getString(song.getColumnIndex(MusicListDb.getSongText()));
-
-        return new SongText(idSong, name, textSong, authorName);
-    }
 
     public long getIdSong() {
         return idSong;

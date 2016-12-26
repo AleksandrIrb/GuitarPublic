@@ -38,7 +38,7 @@ public class SongListFragment extends Fragment {
         nameAuthor = getArguments().getString(EXTRA_NAME_AUTHOR_FRAGMENT);
         View view = inflater.inflate(R.layout.fragment_song, container, false);
         MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
-        cursor = db.querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{nameAuthor});
+        cursor = db.querySongByAuthorName(nameAuthor);
         return view;
     }
 
