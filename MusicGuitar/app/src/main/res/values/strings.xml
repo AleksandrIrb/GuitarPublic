@@ -19,4 +19,5 @@
     <string name="title_action_edit">Изменить</string>
     <string name="title_activity_container_for_song">ContainerForSongActivity</string>
     <string name="title_activity_container">ContainerActivity</string>
+    <string name="search_hint">Search</string>
 </resources>

@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import alex.aleksandr.ru.musicguitar.DAO.SongText;
+
 
 public class EditActivity extends AppCompatActivity {
 

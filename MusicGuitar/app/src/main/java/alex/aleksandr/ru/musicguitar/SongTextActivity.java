@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import alex.aleksandr.ru.musicguitar.DAO.SongText;
+
 public class SongTextActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
@@ -17,21 +19,19 @@ public class SongTextActivity extends AppCompatActivity {
 
     private MusicListDb db;
     private TextView textView;
-    private int CountAuthor;
-    private long SongId;
+    private int countAuthor;
+    private long songId;
     private Cursor cursor;
     private Toolbar toolbar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_text);
-
         db = MusicListDb.getMusicDataBase(this);
         textView = (TextView) findViewById(R.id.textViewSongText);
-        SongId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
-        CountAuthor = getIntent().getIntExtra(EXTRA_SONG_COUNT, 0);
+        songId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
+        countAuthor = getIntent().getIntExtra(EXTRA_SONG_COUNT, 0);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         if (toolbar != null) {
@@ -43,15 +43,16 @@ public class SongTextActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        cursor = db.querySongById(SongId);
+        cursor = db.querySongById(songId);
         cursor.moveToFirst();
+        SongText songText = SongText.fromCursor(cursor);
+        cursor.close();
 
         if (toolbar != null) {
-            setTitle(SongText.fromCursor(cursor).getName());
-            toolbar.setSubtitle(SongText.fromCursor(cursor).getAuthorName());
+            setTitle(songText.getName());
+            toolbar.setSubtitle(songText.getAuthorName());
         }
-
-        textView.setText(SongText.fromCursor(cursor).getTextSong());
+        textView.setText(songText.getTextSong());
     }
 
     @Override
@@ -67,26 +68,23 @@ public class SongTextActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_song_text_edit) {
             Intent i = new Intent(SongTextActivity.this, EditActivity.class);
             i.putExtra(EditActivity.EXTRA_IS_EDIT, true);
-            i.putExtra(EditActivity.EXTRA_SONG_EDIT, SongId);
+            i.putExtra(EditActivity.EXTRA_SONG_EDIT, songId);
             startActivity(i);
         } else if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.menu_song_text_delete) {
             deleteList();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     public void deleteList() {
-        if (CountAuthor == 1) {
-
-            db.deleteSong(SongId);
+        if (countAuthor == 1) {
+            db.deleteSong(songId);
             db.deleteAuthor(SongText.fromCursor(cursor).getAuthorName());
             finish();
-
         } else {
-            db.deleteSong(SongId);
+            db.deleteSong(songId);
             finish();
         }
 

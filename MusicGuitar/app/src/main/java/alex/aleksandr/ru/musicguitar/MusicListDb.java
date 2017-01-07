@@ -85,23 +85,23 @@ public class MusicListDb extends SQLiteOpenHelper {
 
 
     public Cursor querySelectAuthor(String args, String[] argInit) {
-        Cursor cursor = getReadableDatabase().query(
+        Cursor cursor = getWritableDatabase().query(
                 AUTHOR_TABLE_NAME,
                 null,
                 args,
                 argInit,
-                null, null, null
+                AUTHOR_NAME, null, null
         );
         return cursor;
     }
 
     public Cursor querySelectSong(String args, String[] argsInit) {
-        Cursor cursor = getReadableDatabase().query(
+        Cursor cursor = getWritableDatabase().query(
                 SONG_TABLE_NAME,
                 null,
                 args,
                 argsInit,
-                null, null, null
+                SONG_NAME, null, null
         );
         return cursor;
     }
