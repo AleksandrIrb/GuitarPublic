@@ -1,7 +1,6 @@
 package alex.aleksandr.ru.musicguitar;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -29,6 +28,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     private boolean is_land;
     private AuthorListFragment authorListFragment = null;
     private FragmentManager fragmentManager;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +67,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         });
 
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.content_container_author, authorListFragment).commit();
-
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AuthorListFragment.EXTRA_IS_LAND_ORIENTATION, is_land);
-        bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER,"");
-        authorListFragment.setArguments(bundle);
-
-        final EditText editText = (EditText) findViewById(R.id.edit_search);
+        updateFragments("");
+        editText = (EditText) findViewById(R.id.edit_search);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -84,19 +78,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String s = editText.getText().toString();
-                if(authorListFragment != null)
-                {
-                    fragmentManager.beginTransaction().
-                            remove(authorListFragment).commit();
-                }
-                authorListFragment = new AuthorListFragment();
-                fragmentManager.beginTransaction().add(R.id.content_container_author, authorListFragment).commit();
-
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(AuthorListFragment.EXTRA_IS_LAND_ORIENTATION, is_land);
-                bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER,s);
-                authorListFragment.setArguments(bundle);
-
+                updateFragments(s);
             }
 
             @Override
@@ -107,6 +89,16 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateFragments("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -129,6 +121,21 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void updateFragments(String s) {
+        if(authorListFragment != null)
+        {
+            fragmentManager.beginTransaction().
+                    remove(authorListFragment).commit();
+        }
+        authorListFragment = new AuthorListFragment();
+        fragmentManager.beginTransaction().add(R.id.content_container_author, authorListFragment).commit();
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(AuthorListFragment.EXTRA_IS_LAND_ORIENTATION, is_land);
+        bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER,s);
+        authorListFragment.setArguments(bundle);
     }
 
 }

@@ -62,6 +62,7 @@ public class AuthorListFragment extends Fragment {
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //cursor.close();
     }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

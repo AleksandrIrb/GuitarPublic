@@ -11,12 +11,16 @@ import android.view.View;
 
 public class ContainerActivity extends AppCompatActivity {
 
+    private FragmentManager fragmentManager;
+    private SongListFragment songListFragment = null;
+    String name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
 
-        String name = getIntent().getStringExtra(AuthorActivity.EXTRA_NAME_AUTHOR);
+        name = getIntent().getStringExtra(AuthorActivity.EXTRA_NAME_AUTHOR);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -24,17 +28,16 @@ public class ContainerActivity extends AppCompatActivity {
             setTitle(name);
         }
 
-        SongListFragment songListFragment = new SongListFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().add(R.id.content_container, songListFragment).
-                addToBackStack("MyBackStack").commit();
+        fragmentManager = getSupportFragmentManager();
+        updateFragments(name);
 
-        Bundle bundle = new Bundle();
-        bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, name);
-        songListFragment.setArguments(bundle);
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateFragments(name);
+    }
 
     @Override
     public void onBackPressed() {
@@ -47,8 +50,20 @@ public class ContainerActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateFragments(String name) {
+        if(songListFragment != null) {
+            fragmentManager.beginTransaction().
+                    remove(songListFragment).commit();
+        }
+        songListFragment = new SongListFragment();
+        fragmentManager.beginTransaction().add(R.id.content_container, songListFragment).commit();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, name);
+        songListFragment.setArguments(bundle);
     }
 
 }

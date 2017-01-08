@@ -9,20 +9,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import alex.aleksandr.ru.musicguitar.DAO.SongText;
 
 public class SongTextActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
-    //public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
 
     private MusicListDb db;
     private TextView textView;
     private int countAuthor;
     private long songId;
-    private Cursor cursor;
     private Toolbar toolbar;
     private SongText songText;
 
@@ -45,11 +42,10 @@ public class SongTextActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        cursor = db.querySongById(songId);
+        Cursor cursor = db.querySongById(songId);
         cursor.moveToFirst();
         songText = SongText.fromCursor(cursor);
         cursor.close();
-
         countAuthor = db.querySongByAuthorName(songText.getAuthorName()).getCount();
 
         if (toolbar != null) {
