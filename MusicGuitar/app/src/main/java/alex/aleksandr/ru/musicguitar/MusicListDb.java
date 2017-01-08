@@ -73,13 +73,19 @@ public class MusicListDb extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor queryAuthorByNameFilter(String filter) {
+        Cursor c = querySelectAuthor(AUTHOR_NAME + " LIKE ?", new String[]{"%" + filter + "%"});
+        return c;
+    }
+
+
     public Cursor querySongById(long id) {
         Cursor c = querySelectSong("_id= ?", new String[]{String.valueOf(id)});
         return c;
     }
 
     public Cursor querySongByAuthorName(String name) {
-        Cursor c = querySelectSong(MusicListDb.getSongAuthor() + "= ?", new String[]{name});
+        Cursor c = querySelectSong(SONG_AUTHOR + "= ?", new String[]{name});
         return c;
     }
 

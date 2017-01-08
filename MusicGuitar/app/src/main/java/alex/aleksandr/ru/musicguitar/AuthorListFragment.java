@@ -24,10 +24,13 @@ import static alex.aleksandr.ru.musicguitar.AuthorActivity.EXTRA_NAME_AUTHOR;
 
 public class AuthorListFragment extends Fragment {
 
+    public static final String EXTRA_IS_LAND_ORIENTATION = "alex.aleksandr.ru.musicguitar.is_land_orientation";
+    public static final String EXTRA_SEARCH_FILTER = "alex.aleksandr.ru.musicguitar.search_filter";
+
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
-    private FrameLayout frameForSong = null;
+    private boolean frameForSong;
     private SongListFragment songListFragment = null;
 
 
@@ -42,8 +45,13 @@ public class AuthorListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_author, container, false);
         MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
-        frameForSong = (FrameLayout) getView().findViewById(R.id.frame_layout_for_song_in_author);
-        cursor = db.queryAuthorByName();
+        frameForSong = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION);
+        String filterSearch = getArguments().getString(EXTRA_SEARCH_FILTER);
+        if(filterSearch.isEmpty()) {
+            cursor = db.queryAuthorByName();
+        } else {
+            cursor = db.queryAuthorByNameFilter(filterSearch);
+        }
         return view;
     }
 
@@ -70,9 +78,9 @@ public class AuthorListFragment extends Fragment {
         @Override
         public void onClick(View view) {
 
-            if(frameForSong != null) {
+            if(frameForSong) {
 
-                FragmentManager fragmentManager = getChildFragmentManager();
+                FragmentManager fragmentManager = getFragmentManager();
                 if(songListFragment != null)
                 {
                     fragmentManager.beginTransaction().

@@ -9,13 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import alex.aleksandr.ru.musicguitar.DAO.SongText;
 
 public class SongTextActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
-    public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
+    //public static final String EXTRA_SONG_COUNT = "alex.aleksandr.ru.musicguitar.extra_song_count";
 
     private MusicListDb db;
     private TextView textView;
@@ -23,6 +24,7 @@ public class SongTextActivity extends AppCompatActivity {
     private long songId;
     private Cursor cursor;
     private Toolbar toolbar;
+    private SongText songText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,7 @@ public class SongTextActivity extends AppCompatActivity {
         db = MusicListDb.getMusicDataBase(this);
         textView = (TextView) findViewById(R.id.textViewSongText);
         songId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
-        countAuthor = getIntent().getIntExtra(EXTRA_SONG_COUNT, 0);
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         if (toolbar != null) {
@@ -45,8 +47,10 @@ public class SongTextActivity extends AppCompatActivity {
         super.onResume();
         cursor = db.querySongById(songId);
         cursor.moveToFirst();
-        SongText songText = SongText.fromCursor(cursor);
+        songText = SongText.fromCursor(cursor);
         cursor.close();
+
+        countAuthor = db.querySongByAuthorName(songText.getAuthorName()).getCount();
 
         if (toolbar != null) {
             setTitle(songText.getName());
@@ -73,21 +77,16 @@ public class SongTextActivity extends AppCompatActivity {
         } else if (id == android.R.id.home) {
             finish();
         } else if (id == R.id.menu_song_text_delete) {
-            deleteList();
+            if (countAuthor == 1) {
+                db.deleteSong(songId);
+                db.deleteAuthor(songText.getAuthorName());
+                finish();
+            } else {
+                db.deleteSong(songId);
+                finish();
+            }
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void deleteList() {
-        if (countAuthor == 1) {
-            db.deleteSong(songId);
-            db.deleteAuthor(SongText.fromCursor(cursor).getAuthorName());
-            finish();
-        } else {
-            db.deleteSong(songId);
-            finish();
-        }
-
     }
 
 }
