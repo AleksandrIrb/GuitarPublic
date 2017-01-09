@@ -67,12 +67,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         });
 
         fragmentManager = getSupportFragmentManager();
-        //updateFragments("");
         editText = (EditText) findViewById(R.id.edit_search);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -83,7 +81,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
 

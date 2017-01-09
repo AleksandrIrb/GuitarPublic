@@ -62,8 +62,6 @@ public class SongListFragment extends Fragment {
 
         private TextView textView;
         private Song song;
-        //private Cursor c;
-        //private int positionHolder;
 
         private RecyclerHolder(View itemView) {
             super(itemView);
@@ -73,11 +71,10 @@ public class SongListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            //c = cursor;
-            //c.moveToPosition(positionHolder);
             Intent i = new Intent(getActivity(), SongTextActivity.class);
             i.putExtra(SongTextActivity.EXTRA_ID_SONG, song.getIdSong());
             startActivity(i);
+            deleteFragment();
         }
     }
 
@@ -102,13 +99,16 @@ public class SongListFragment extends Fragment {
             Song song = Song.fromCursor(cursor);
             holder.textView.setText(song.getName());
             holder.song = song;
-            //holder.positionHolder = position;
         }
 
         @Override
         public int getItemCount() {
             return cursor.getCount();
         }
+    }
+
+    private void deleteFragment() {
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
 }

@@ -68,15 +68,6 @@ public class AuthorListFragment extends Fragment {
         //cursor.close();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if(songListFragment != null)
-        {
-            fragmentManager.beginTransaction().
-                    remove(songListFragment).commit();
-        }
-    }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -140,4 +131,5 @@ public class AuthorListFragment extends Fragment {
             return cursor.getCount();
         }
     }
+
 }

@@ -29,8 +29,6 @@ public class ContainerActivity extends AppCompatActivity {
         }
 
         fragmentManager = getSupportFragmentManager();
-        updateFragments(name);
-
     }
 
     @Override
