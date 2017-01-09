@@ -31,6 +31,7 @@ public class AuthorListFragment extends Fragment {
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
     private boolean frameForSong;
+    private FragmentManager fragmentManager;
     private SongListFragment songListFragment = null;
 
 
@@ -45,6 +46,7 @@ public class AuthorListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_author, container, false);
         MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
+        fragmentManager = getFragmentManager();
         frameForSong = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION);
         String filterSearch = getArguments().getString(EXTRA_SEARCH_FILTER);
         if(filterSearch.isEmpty()) {
@@ -52,6 +54,7 @@ public class AuthorListFragment extends Fragment {
         } else {
             cursor = db.queryAuthorByNameFilter(filterSearch);
         }
+
         return view;
     }
 
@@ -63,6 +66,16 @@ public class AuthorListFragment extends Fragment {
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //cursor.close();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(songListFragment != null)
+        {
+            fragmentManager.beginTransaction().
+                    remove(songListFragment).commit();
+        }
     }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -81,7 +94,6 @@ public class AuthorListFragment extends Fragment {
 
             if(frameForSong) {
 
-                FragmentManager fragmentManager = getFragmentManager();
                 if(songListFragment != null)
                 {
                     fragmentManager.beginTransaction().

@@ -67,7 +67,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         });
 
         fragmentManager = getSupportFragmentManager();
-        updateFragments("");
+        //updateFragments("");
         editText = (EditText) findViewById(R.id.edit_search);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -138,4 +138,5 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         authorListFragment.setArguments(bundle);
     }
 
+    
 }
