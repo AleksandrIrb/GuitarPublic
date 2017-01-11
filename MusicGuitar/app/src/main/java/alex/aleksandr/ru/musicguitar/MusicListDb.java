@@ -89,6 +89,11 @@ public class MusicListDb extends SQLiteOpenHelper {
         return c;
     }
 
+    public Cursor querySongByAuthorNameFilter(String name, String filter) {
+        Cursor c = querySelectSong(SONG_AUTHOR + "= ? AND " + SONG_NAME +" LIKE ?", new String[]{name, "%" + filter + "%"});
+        return c;
+    }
+
 
     public Cursor querySelectAuthor(String args, String[] argInit) {
         Cursor cursor = getWritableDatabase().query(

@@ -6,14 +6,18 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 public class ContainerActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private SongListFragment songListFragment = null;
-    String name;
+    private String name;
+    private EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,23 @@ public class ContainerActivity extends AppCompatActivity {
         }
 
         fragmentManager = getSupportFragmentManager();
+        editText = (EditText) findViewById(R.id.song_search);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateFragments(name);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     @Override
@@ -52,6 +73,7 @@ public class ContainerActivity extends AppCompatActivity {
     }
 
     private void updateFragments(String name) {
+        String s = editText.getText().toString();
         if(songListFragment != null) {
             fragmentManager.beginTransaction().
                     remove(songListFragment).commit();
@@ -61,6 +83,7 @@ public class ContainerActivity extends AppCompatActivity {
 
         Bundle bundle = new Bundle();
         bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, name);
+        bundle.putString(SongListFragment.EXTRA_SEARCH_FILTER_SONG, s);
         songListFragment.setArguments(bundle);
     }
 

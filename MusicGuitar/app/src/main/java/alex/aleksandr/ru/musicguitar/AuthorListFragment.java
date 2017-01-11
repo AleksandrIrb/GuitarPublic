@@ -18,10 +18,6 @@ import alex.aleksandr.ru.musicguitar.DAO.Author;
 
 import static alex.aleksandr.ru.musicguitar.AuthorActivity.EXTRA_NAME_AUTHOR;
 
-/**
- * Created by alex on 07.01.17.
- */
-
 public class AuthorListFragment extends Fragment {
 
     public static final String EXTRA_IS_LAND_ORIENTATION = "alex.aleksandr.ru.musicguitar.is_land_orientation";
@@ -33,6 +29,7 @@ public class AuthorListFragment extends Fragment {
     private boolean frameForSong;
     private FragmentManager fragmentManager;
     private SongListFragment songListFragment = null;
+    private String tmp = "";
 
 
     @Override
@@ -49,6 +46,7 @@ public class AuthorListFragment extends Fragment {
         fragmentManager = getFragmentManager();
         frameForSong = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION);
         String filterSearch = getArguments().getString(EXTRA_SEARCH_FILTER);
+
         if(filterSearch.isEmpty()) {
             cursor = db.queryAuthorByName();
         } else {
@@ -65,6 +63,9 @@ public class AuthorListFragment extends Fragment {
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if(frameForSong) {
+            updateSongFragment("");
+        }
         //cursor.close();
     }
 
@@ -84,18 +85,8 @@ public class AuthorListFragment extends Fragment {
         public void onClick(View view) {
 
             if(frameForSong) {
-
-                if(songListFragment != null)
-                {
-                    fragmentManager.beginTransaction().
-                            remove(songListFragment).commit();
-                }
-                songListFragment = new SongListFragment();
-                fragmentManager.beginTransaction().
-                        add(R.id.frame_layout_for_song_in_author, songListFragment).commit();
-                Bundle bundle = new Bundle();
-                bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, author.getName());
-                songListFragment.setArguments(bundle);
+                tmp = author.getName();
+                updateSongFragment("");
             } else {
                 Intent i = new Intent(getActivity(), ContainerActivity.class);
                 i.putExtra(EXTRA_NAME_AUTHOR, author.getName());
@@ -130,6 +121,16 @@ public class AuthorListFragment extends Fragment {
         public int getItemCount() {
             return cursor.getCount();
         }
+    }
+
+    public void updateSongFragment(String filterSong) {
+        songListFragment = new SongListFragment();
+        fragmentManager.beginTransaction().
+                replace(R.id.frame_layout_for_song_in_author, songListFragment).commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, tmp);
+        bundle.putString(SongListFragment.EXTRA_SEARCH_FILTER_SONG, filterSong);
+        songListFragment.setArguments(bundle);
     }
 
 }

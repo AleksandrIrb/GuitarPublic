@@ -15,7 +15,7 @@
     tools:showIn="@layout/activity_author">
 
     <EditText
-        android:id="@+id/edit_search"
+        android:id="@+id/author_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"

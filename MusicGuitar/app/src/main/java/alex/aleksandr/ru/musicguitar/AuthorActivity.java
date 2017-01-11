@@ -29,6 +29,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     private AuthorListFragment authorListFragment = null;
     private FragmentManager fragmentManager;
     private EditText editText;
+    private EditText editTextFilterSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         frameForSong = (FrameLayout) findViewById(R.id.frame_layout_for_song_in_author);
         authorListFragment = new AuthorListFragment();
-
-        if(frameForSong != null) {
-            is_land = true;
-        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
 
         if (toolbar != null) {
@@ -67,7 +64,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         });
 
         fragmentManager = getSupportFragmentManager();
-        editText = (EditText) findViewById(R.id.edit_search);
+        editText = (EditText) findViewById(R.id.author_search);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -75,8 +72,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String s = editText.getText().toString();
-                updateFragments(s);
+                updateFragments();
             }
 
             @Override
@@ -84,12 +80,34 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
+        if(frameForSong != null) {
+            is_land = true;
+            editTextFilterSong = (EditText) findViewById(R.id.song_search);
+            editTextFilterSong.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    String songFilter = editTextFilterSong.getText().toString();
+                    authorListFragment.updateSongFragment(songFilter);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+
+                }
+            });
+        }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updateFragments("");
+        updateFragments();
     }
 
     @Override
@@ -120,15 +138,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         return true;
     }
 
-    private void updateFragments(String s) {
-        if(authorListFragment != null)
-        {
-            fragmentManager.beginTransaction().
-                    remove(authorListFragment).commit();
-        }
+    private void updateFragments() {
+        String s = editText.getText().toString();
         authorListFragment = new AuthorListFragment();
-        fragmentManager.beginTransaction().add(R.id.content_container_author, authorListFragment).commit();
-
+        fragmentManager.beginTransaction().replace(R.id.content_container_author, authorListFragment).commit();
         Bundle bundle = new Bundle();
         bundle.putBoolean(AuthorListFragment.EXTRA_IS_LAND_ORIENTATION, is_land);
         bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER,s);

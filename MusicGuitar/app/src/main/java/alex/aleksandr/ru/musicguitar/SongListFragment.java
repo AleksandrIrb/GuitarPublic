@@ -22,11 +22,11 @@ import alex.aleksandr.ru.musicguitar.DAO.SongText;
 public class SongListFragment extends Fragment {
 
     public static final String EXTRA_NAME_AUTHOR_FRAGMENT = "alex.aleksandr.ru.musicguitar.name_author_fragment";
+    public static final String EXTRA_SEARCH_FILTER_SONG = "alex.aleksandr.ru.musicguitar.search_filter_song";
 
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
-    private String nameAuthor;
 
 
     @Override
@@ -38,14 +38,21 @@ public class SongListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        nameAuthor = getArguments().getString(EXTRA_NAME_AUTHOR_FRAGMENT);
+        String nameAuthor = getArguments().getString(EXTRA_NAME_AUTHOR_FRAGMENT);
+        String searchFilter = getArguments().getString(EXTRA_SEARCH_FILTER_SONG);
         View view = inflater.inflate(R.layout.fragment_song, container, false);
         MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
-        cursor = db.querySongByAuthorName(nameAuthor);
+        if (searchFilter.isEmpty()) {
+            cursor = db.querySongByAuthorName(nameAuthor);
+        } else {
+            cursor = db.querySongByAuthorNameFilter(nameAuthor, searchFilter);
+        }
+/*
         int count = cursor.getCount();
         if (count == 0) {
             getActivity().finish();
         }
+        */
         return view;
     }
 
@@ -74,7 +81,7 @@ public class SongListFragment extends Fragment {
             Intent i = new Intent(getActivity(), SongTextActivity.class);
             i.putExtra(SongTextActivity.EXTRA_ID_SONG, song.getIdSong());
             startActivity(i);
-            deleteFragment();
+            //deleteFragment();
         }
     }
 
@@ -106,9 +113,10 @@ public class SongListFragment extends Fragment {
             return cursor.getCount();
         }
     }
-
+/*
     private void deleteFragment() {
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
+    */
 
 }
