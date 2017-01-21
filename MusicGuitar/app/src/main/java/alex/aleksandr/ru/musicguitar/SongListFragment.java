@@ -13,21 +13,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import alex.aleksandr.ru.musicguitar.DAO.Song;
-import alex.aleksandr.ru.musicguitar.DAO.SongText;
 
-/**
- * Created by alex on 18.12.16.
- */
 
 public class SongListFragment extends Fragment {
 
     public static final String EXTRA_NAME_AUTHOR_FRAGMENT = "alex.aleksandr.ru.musicguitar.name_author_fragment";
     public static final String EXTRA_SEARCH_FILTER_SONG = "alex.aleksandr.ru.musicguitar.search_filter_song";
+    public static final String EXTRA_IS_LAND_ORIENTATION_SONG_FRAG =
+            "alex.aleksandr.ru.musicguitar.is_land_orientation_song_frag";
 
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,19 +37,17 @@ public class SongListFragment extends Fragment {
 
         String nameAuthor = getArguments().getString(EXTRA_NAME_AUTHOR_FRAGMENT);
         String searchFilter = getArguments().getString(EXTRA_SEARCH_FILTER_SONG);
+        boolean isLand = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION_SONG_FRAG);
         View view = inflater.inflate(R.layout.fragment_song, container, false);
-        MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
+        MusicDb db = MusicDb.getInstance(getActivity());
         if (searchFilter.isEmpty()) {
             cursor = db.querySongByAuthorName(nameAuthor);
         } else {
             cursor = db.querySongByAuthorNameFilter(nameAuthor, searchFilter);
         }
-/*
-        int count = cursor.getCount();
-        if (count == 0) {
+        if (!isLand & (cursor.getCount() == 0) & searchFilter.isEmpty()) {
             getActivity().finish();
         }
-        */
         return view;
     }
 
@@ -63,6 +58,12 @@ public class SongListFragment extends Fragment {
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cursor.close();
     }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -81,7 +82,6 @@ public class SongListFragment extends Fragment {
             Intent i = new Intent(getActivity(), SongTextActivity.class);
             i.putExtra(SongTextActivity.EXTRA_ID_SONG, song.getIdSong());
             startActivity(i);
-            //deleteFragment();
         }
     }
 
@@ -113,10 +113,5 @@ public class SongListFragment extends Fragment {
             return cursor.getCount();
         }
     }
-/*
-    private void deleteFragment() {
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-    }
-    */
 
 }

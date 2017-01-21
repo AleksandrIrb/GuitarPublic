@@ -14,7 +14,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -23,17 +22,17 @@
             android:label="@string/title_activity_edit"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".HelpActivity"
-            android:label="@string/title_activity_about_app"
+            android:name=".HelpAndAboutAppActivity"
+            android:label="@string/title_activity_help_and_about"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".SongTextActivity"
             android:label="@string/title_activity_song_text"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ContainerActivity"
-            android:label="@string/title_activity_container"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:name=".SongActivity"
+            android:label="@string/title_activity_song"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

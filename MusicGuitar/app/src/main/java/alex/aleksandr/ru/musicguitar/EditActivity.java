@@ -21,10 +21,9 @@ public class EditActivity extends AppCompatActivity {
     private EditText author;
     private EditText songname;
     private EditText songtext;
-    private Button addInDatabase;
     private boolean isEdit;
     private long id;
-    private MusicListDb db;
+    private MusicDb db;
     private String oldAuthor;
 
 
@@ -41,20 +40,21 @@ public class EditActivity extends AppCompatActivity {
         author = (EditText) findViewById(R.id.editNameAuthor);
         songname = (EditText) findViewById(R.id.editNameSong);
         songtext = (EditText) findViewById(R.id.editTextSong);
-        addInDatabase = (Button) findViewById(R.id.buttonAdd);
-        db = MusicListDb.getMusicDataBase(this);
+        Button addInDatabase = (Button) findViewById(R.id.buttonAdd);
+        db = MusicDb.getInstance(this);
 
         isEdit = getIntent().getBooleanExtra(EXTRA_IS_EDIT, false);
         id = getIntent().getLongExtra(EXTRA_SONG_EDIT, 0);
 
         if (isEdit) {
-            Cursor cursor = db.querySelectSong("_id= ?", new String[]{String.valueOf(id)});
+            Cursor cursor = db.querySongById(id);
             cursor.moveToFirst();
             SongText songText = SongText.fromCursor(cursor);
             oldAuthor = songText.getAuthorName();
             author.setText(oldAuthor);
             songname.setText(songText.getName());
             songtext.setText(songText.getTextSong());
+            cursor.close();
         }
 
         addInDatabase.setOnClickListener(new View.OnClickListener() {
@@ -66,13 +66,12 @@ public class EditActivity extends AppCompatActivity {
 
                 if (!a.isEmpty() && !sn.isEmpty() && !stxt.isEmpty()) {
 
-
                     if (isEdit) {
                         boolean isYesUpdate = db.updateListSong(a, sn, stxt, id, oldAuthor);
                         if (isYesUpdate) {
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Ошибка обновления данных", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.error_added_data, Toast.LENGTH_SHORT).show();
                         }
 
                     } else {
@@ -81,12 +80,12 @@ public class EditActivity extends AppCompatActivity {
                         if (isYesAdd) {
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), "Ошибка добавления данных", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.error_added_data, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Заполните все поля", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.warning_added_label, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -95,12 +94,10 @@ public class EditActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
 
-        if (id == android.R.id.home) {
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
 }

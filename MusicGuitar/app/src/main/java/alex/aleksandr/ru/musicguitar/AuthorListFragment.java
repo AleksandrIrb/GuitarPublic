@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import alex.aleksandr.ru.musicguitar.DAO.Author;
@@ -26,9 +25,8 @@ public class AuthorListFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
-    private boolean frameForSong;
+    private boolean isYesFrameForSong;
     private FragmentManager fragmentManager;
-    private SongListFragment songListFragment = null;
     private String tmp = "";
 
 
@@ -42,12 +40,12 @@ public class AuthorListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_author, container, false);
-        MusicListDb db = MusicListDb.getMusicDataBase(getActivity());
+        MusicDb db = MusicDb.getInstance(getActivity());
         fragmentManager = getFragmentManager();
-        frameForSong = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION);
+        isYesFrameForSong = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION);
         String filterSearch = getArguments().getString(EXTRA_SEARCH_FILTER);
 
-        if(filterSearch.isEmpty()) {
+        if (filterSearch.isEmpty()) {
             cursor = db.queryAuthorByName();
         } else {
             cursor = db.queryAuthorByNameFilter(filterSearch);
@@ -63,12 +61,16 @@ public class AuthorListFragment extends Fragment {
         recyclerAdapter = new RecyclerAdapter(cursor);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if(frameForSong) {
+        if (isYesFrameForSong) {
             updateSongFragment("");
         }
-        //cursor.close();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        cursor.close();
+    }
 
     private class RecyclerHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -84,12 +86,13 @@ public class AuthorListFragment extends Fragment {
         @Override
         public void onClick(View view) {
 
-            if(frameForSong) {
+            if (isYesFrameForSong) {
                 tmp = author.getName();
                 updateSongFragment("");
             } else {
-                Intent i = new Intent(getActivity(), ContainerActivity.class);
+                Intent i = new Intent(getActivity(), SongActivity.class);
                 i.putExtra(EXTRA_NAME_AUTHOR, author.getName());
+                i.putExtra(SongActivity.EXTRA_IS_LAND_ORIENTATION_SONG, isYesFrameForSong);
                 startActivity(i);
             }
         }
@@ -124,12 +127,13 @@ public class AuthorListFragment extends Fragment {
     }
 
     public void updateSongFragment(String filterSong) {
-        songListFragment = new SongListFragment();
+        SongListFragment songListFragment = new SongListFragment();
         fragmentManager.beginTransaction().
                 replace(R.id.frame_layout_for_song_in_author, songListFragment).commit();
         Bundle bundle = new Bundle();
         bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, tmp);
         bundle.putString(SongListFragment.EXTRA_SEARCH_FILTER_SONG, filterSong);
+        bundle.putBoolean(SongListFragment.EXTRA_IS_LAND_ORIENTATION_SONG_FRAG, isYesFrameForSong);
         songListFragment.setArguments(bundle);
     }
 

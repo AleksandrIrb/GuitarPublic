@@ -13,8 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
@@ -28,8 +28,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     private boolean is_land;
     private AuthorListFragment authorListFragment = null;
     private FragmentManager fragmentManager;
-    private EditText editText;
-    private EditText editTextFilterSong;
+    private EditText editTextSearchAuthor;
+    private EditText editTextSearchSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +64,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         });
 
         fragmentManager = getSupportFragmentManager();
-        editText = (EditText) findViewById(R.id.author_search);
-        editText.addTextChangedListener(new TextWatcher() {
+        editTextSearchAuthor = (EditText) findViewById(R.id.author_search);
+        editTextSearchAuthor.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -80,10 +80,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             }
         });
 
-        if(frameForSong != null) {
+        if (frameForSong != null) {
             is_land = true;
-            editTextFilterSong = (EditText) findViewById(R.id.song_search);
-            editTextFilterSong.addTextChangedListener(new TextWatcher() {
+            editTextSearchSong = (EditText) findViewById(R.id.song_search);
+            editTextSearchSong.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -91,7 +91,7 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    String songFilter = editTextFilterSong.getText().toString();
+                    String songFilter = editTextSearchSong.getText().toString();
                     authorListFragment.updateSongFragment(songFilter);
                 }
 
@@ -112,7 +112,11 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public void onBackPressed() {
-        finish();
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -120,13 +124,15 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
         switch (item.getItemId()) {
             case R.id.show_f1: {
-                Intent i = new Intent(AuthorActivity.this, HelpActivity.class);
+                Intent i = new Intent(AuthorActivity.this, HelpAndAboutAppActivity.class);
+                i.putExtra(HelpAndAboutAppActivity.EXTRA_IS_HELP_ACTIVITY, true);
                 startActivity(i);
                 break;
             }
             case R.id.show_f2: {
-                AboutAppFragment dialogWindow = new AboutAppFragment();
-                dialogWindow.show(getSupportFragmentManager(), "abAppFragment");
+                Intent i = new Intent(AuthorActivity.this, HelpAndAboutAppActivity.class);
+                i.putExtra(HelpAndAboutAppActivity.EXTRA_IS_HELP_ACTIVITY, false);
+                startActivity(i);
                 break;
             }
             case R.id.out_app: {
@@ -139,14 +145,12 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     }
 
     private void updateFragments() {
-        String s = editText.getText().toString();
+        String s = editTextSearchAuthor.getText().toString();
         authorListFragment = new AuthorListFragment();
         fragmentManager.beginTransaction().replace(R.id.content_container_author, authorListFragment).commit();
         Bundle bundle = new Bundle();
         bundle.putBoolean(AuthorListFragment.EXTRA_IS_LAND_ORIENTATION, is_land);
-        bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER,s);
+        bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER, s);
         authorListFragment.setArguments(bundle);
     }
-
-    
 }

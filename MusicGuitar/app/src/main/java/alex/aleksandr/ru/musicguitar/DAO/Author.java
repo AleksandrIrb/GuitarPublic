@@ -2,7 +2,7 @@ package alex.aleksandr.ru.musicguitar.DAO;
 
 import android.database.Cursor;
 
-import alex.aleksandr.ru.musicguitar.MusicListDb;
+import alex.aleksandr.ru.musicguitar.MusicDb;
 
 
 public class Author {
@@ -11,7 +11,7 @@ public class Author {
     private long id;
 
     public static Author fromCursor(Cursor c) {
-        String name = c.getString(c.getColumnIndex(MusicListDb.getAuthorName()));
+        String name = c.getString(c.getColumnIndex(MusicDb.getAuthorName()));
         long id = c.getLong(c.getColumnIndex("_id"));
         return new Author(id, name);
     }

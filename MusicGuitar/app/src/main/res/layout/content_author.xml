@@ -19,12 +19,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|top"
-        android:hint="@string/search_hint"
-        android:inputType="textPersonName" />
+        android:hint="@string/edit_author_hint"
+        android:inputType="textPersonName"
+        android:maxLength="50" />
 
     <FrameLayout
         android:id="@+id/content_container_author"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

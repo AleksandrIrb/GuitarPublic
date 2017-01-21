@@ -16,7 +16,7 @@ public class SongTextActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID_SONG = "alex.aleksandr.ru.musicguitar.extra_id_song";
 
-    private MusicListDb db;
+    private MusicDb db;
     private TextView textView;
     private int countAuthor;
     private long songId;
@@ -27,7 +27,7 @@ public class SongTextActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song_text);
-        db = MusicListDb.getMusicDataBase(this);
+        db = MusicDb.getInstance(this);
         textView = (TextView) findViewById(R.id.textViewSongText);
         songId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
 
