@@ -35,12 +35,10 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_author);
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         frameForSong = (FrameLayout) findViewById(R.id.frame_layout_for_song_in_author);
         authorListFragment = new AuthorListFragment();
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,
@@ -48,10 +46,8 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
         }
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.navView);
         navigationView.setNavigationItemSelectedListener(this);
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +58,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
             }
         });
-
         fragmentManager = getSupportFragmentManager();
         editTextSearchAuthor = (EditText) findViewById(R.id.author_search);
         editTextSearchAuthor.addTextChangedListener(new TextWatcher() {
@@ -86,7 +81,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
             editTextSearchSong.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
                 }
 
                 @Override
@@ -97,7 +91,6 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-
                 }
             });
         }
@@ -123,19 +116,19 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.show_f1: {
+            case R.id.menu_help_app: {
                 Intent i = new Intent(AuthorActivity.this, HelpAndAboutAppActivity.class);
                 i.putExtra(HelpAndAboutAppActivity.EXTRA_IS_HELP_ACTIVITY, true);
                 startActivity(i);
                 break;
             }
-            case R.id.show_f2: {
+            case R.id.menu_about_app: {
                 Intent i = new Intent(AuthorActivity.this, HelpAndAboutAppActivity.class);
                 i.putExtra(HelpAndAboutAppActivity.EXTRA_IS_HELP_ACTIVITY, false);
                 startActivity(i);
                 break;
             }
-            case R.id.out_app: {
+            case R.id.menu_out_app: {
                 finish();
                 break;
             }
@@ -153,4 +146,5 @@ public class AuthorActivity extends AppCompatActivity implements NavigationView.
         bundle.putString(AuthorListFragment.EXTRA_SEARCH_FILTER, s);
         authorListFragment.setArguments(bundle);
     }
+
 }

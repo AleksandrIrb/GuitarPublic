@@ -22,7 +22,6 @@ public class SongActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_song);
-
         name = getIntent().getStringExtra(AuthorActivity.EXTRA_NAME_AUTHOR);
         isLand = getIntent().getBooleanExtra(EXTRA_IS_LAND_ORIENTATION_SONG, true);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -31,13 +30,11 @@ public class SongActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             setTitle(name);
         }
-
         fragmentManager = getSupportFragmentManager();
         editText = (EditText) findViewById(R.id.song_search);
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -47,7 +44,6 @@ public class SongActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
     }
@@ -65,7 +61,6 @@ public class SongActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
@@ -74,10 +69,8 @@ public class SongActivity extends AppCompatActivity {
 
     private void updateFragments(String name) {
         String s = editText.getText().toString();
-
         SongListFragment songListFragment = new SongListFragment();
         fragmentManager.beginTransaction().replace(R.id.content_container, songListFragment).commit();
-
         Bundle bundle = new Bundle();
         bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, name);
         bundle.putString(SongListFragment.EXTRA_SEARCH_FILTER_SONG, s);

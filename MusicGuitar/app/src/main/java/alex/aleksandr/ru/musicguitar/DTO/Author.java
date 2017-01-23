@@ -1,4 +1,4 @@
-package alex.aleksandr.ru.musicguitar.DAO;
+package alex.aleksandr.ru.musicguitar.DTO;
 
 import android.database.Cursor;
 

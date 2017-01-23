@@ -21,25 +21,25 @@
 
         <EditText
             android:id="@+id/editNameAuthor"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:layout_weight="50"
             android:hint="@string/edit_author_hint"
             android:inputType="textPersonName"
             android:maxLength="255" />
 
         <EditText
             android:id="@+id/editNameSong"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
+            android:layout_weight="50"
             android:hint="@string/edit_song_hint"
             android:inputType="textPersonName"
             android:maxLength="255" />
 
         <Button
             android:id="@+id/buttonAdd"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="@string/name_button_add" />
 
@@ -49,7 +49,6 @@
         android:id="@+id/editTextSong"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:ems="10"
         android:gravity="start"
         android:hint="@string/edit_text_song_hint"
         android:inputType="textMultiLine" />

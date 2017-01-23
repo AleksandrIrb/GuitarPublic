@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import alex.aleksandr.ru.musicguitar.DAO.Author;
+import alex.aleksandr.ru.musicguitar.DTO.Author;
 
 import static alex.aleksandr.ru.musicguitar.AuthorActivity.EXTRA_NAME_AUTHOR;
 
@@ -28,6 +28,7 @@ public class AuthorListFragment extends Fragment {
     private boolean isYesFrameForSong;
     private FragmentManager fragmentManager;
     private String tmp = "";
+    private MusicDb db;
 
 
     @Override
@@ -40,18 +41,27 @@ public class AuthorListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_author, container, false);
-        MusicDb db = MusicDb.getInstance(getActivity());
+        db = MusicDb.getInstance(getActivity());
         fragmentManager = getFragmentManager();
         isYesFrameForSong = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION);
         String filterSearch = getArguments().getString(EXTRA_SEARCH_FILTER);
-
         if (filterSearch.isEmpty()) {
             cursor = db.queryAuthorByName();
         } else {
             cursor = db.queryAuthorByNameFilter(filterSearch);
         }
-
         return view;
+    }
+
+    public void updateSongFragment(String filterSong) {
+        SongListFragment songListFragment = new SongListFragment();
+        fragmentManager.beginTransaction().
+                replace(R.id.frame_layout_for_song_in_author, songListFragment).commit();
+        Bundle bundle = new Bundle();
+        bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, tmp);
+        bundle.putString(SongListFragment.EXTRA_SEARCH_FILTER_SONG, filterSong);
+        bundle.putBoolean(SongListFragment.EXTRA_IS_LAND_ORIENTATION_SONG_FRAG, isYesFrameForSong);
+        songListFragment.setArguments(bundle);
     }
 
     @Override
@@ -125,16 +135,4 @@ public class AuthorListFragment extends Fragment {
             return cursor.getCount();
         }
     }
-
-    public void updateSongFragment(String filterSong) {
-        SongListFragment songListFragment = new SongListFragment();
-        fragmentManager.beginTransaction().
-                replace(R.id.frame_layout_for_song_in_author, songListFragment).commit();
-        Bundle bundle = new Bundle();
-        bundle.putString(SongListFragment.EXTRA_NAME_AUTHOR_FRAGMENT, tmp);
-        bundle.putString(SongListFragment.EXTRA_SEARCH_FILTER_SONG, filterSong);
-        bundle.putBoolean(SongListFragment.EXTRA_IS_LAND_ORIENTATION_SONG_FRAG, isYesFrameForSong);
-        songListFragment.setArguments(bundle);
-    }
-
 }

@@ -12,24 +12,15 @@ public class MusicDb extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "musiclistdb.db";
     private static final int DATABASE_VERSION = 1;
-
     private static final String AUTHOR_TABLE_NAME = "authorsong";
-    private static final String SONG_TABLE_NAME = "songlist";
-
     private static final String ID_AUTHOR = "_id";
     private static final String AUTHOR_NAME = "authorname";
-
+    private static final String SONG_TABLE_NAME = "songlist";
     private static final String ID_SONG = "_id";
     private static final String SONG_NAME = "songname";
     private static final String SONG_TEXT = "songtext";
     private static final String SONG_AUTHOR = "songauthor";
-
     private static MusicDb musicDb = null;
-
-
-    private MusicDb(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
 
     public static MusicDb getInstance(Context context) {
 
@@ -39,30 +30,35 @@ public class MusicDb extends SQLiteOpenHelper {
         return musicDb;
     }
 
+    private MusicDb(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        try {
+            String tableOne = "CREATE TABLE " + AUTHOR_TABLE_NAME + " (" +
+                    ID_AUTHOR + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    AUTHOR_NAME + " TEXT UNIQUE);";
 
-        String tableOne = "CREATE TABLE " + AUTHOR_TABLE_NAME + " (" +
-                ID_AUTHOR + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                AUTHOR_NAME + " TEXT UNIQUE);";
+            String tableTwo = "CREATE TABLE " + SONG_TABLE_NAME + " (" +
+                    ID_SONG + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    SONG_NAME + " TEXT UNIQUE, " +
+                    SONG_TEXT + " TEXT, " +
+                    SONG_AUTHOR + " TEXT, " +
+                    "FOREIGN KEY (" + SONG_AUTHOR + ") REFERENCES " +
+                    AUTHOR_TABLE_NAME + "(" + AUTHOR_NAME + "));";
 
-        String tableTwo = "CREATE TABLE " + SONG_TABLE_NAME + " (" +
-                ID_SONG + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SONG_NAME + " TEXT UNIQUE, " +
-                SONG_TEXT + " TEXT, " +
-                SONG_AUTHOR + " TEXT, " +
-                "FOREIGN KEY (" + SONG_AUTHOR + ") REFERENCES " +
-                AUTHOR_TABLE_NAME + "(" + AUTHOR_NAME + "));";
-
-        sqLiteDatabase.execSQL(tableOne);
-        sqLiteDatabase.execSQL(tableTwo);
-        sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
-
+            sqLiteDatabase.execSQL(tableOne);
+            sqLiteDatabase.execSQL(tableTwo);
+            sqLiteDatabase.execSQL("PRAGMA foreign_keys = ON;");
+        } catch (SQLException e) {
+            Log.e("Error created databases", e.toString());
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-
     }
 
     public Cursor queryAuthorByName() {
@@ -87,7 +83,8 @@ public class MusicDb extends SQLiteOpenHelper {
     }
 
     public Cursor querySongByAuthorNameFilter(String name, String filter) {
-        Cursor c = querySelectSong(SONG_AUTHOR + "= ? AND " + SONG_NAME + " LIKE ?", new String[]{name, "%" + filter + "%"});
+        Cursor c = querySelectSong(SONG_AUTHOR + "= ? AND " + SONG_NAME + " LIKE ?",
+                new String[]{name, "%" + filter + "%"});
         return c;
     }
 
@@ -131,7 +128,6 @@ public class MusicDb extends SQLiteOpenHelper {
     }
 
     public boolean addListSong(String author, String nameSong, String textSong) {
-
         try {
             String sqlInSongList = "INSERT INTO " + SONG_TABLE_NAME +
                     " (" + SONG_NAME + ", " +
@@ -147,10 +143,7 @@ public class MusicDb extends SQLiteOpenHelper {
     }
 
     public void addListAuthor(String author) {
-
         Cursor cursor = querySelectAuthor(AUTHOR_NAME + "= ?", new String[]{author});
-        //cursor.moveToFirst();
-
         if (cursor.getCount() == 0) {
             try {
                 String sqlInAuthor = "INSERT INTO " + AUTHOR_TABLE_NAME +
@@ -159,6 +152,7 @@ public class MusicDb extends SQLiteOpenHelper {
                 getWritableDatabase().execSQL(sqlInAuthor);
             } catch (SQLException e) {
                 Log.e("Error added author", e.toString());
+                cursor.close();
             }
         }
         cursor.close();
@@ -172,7 +166,6 @@ public class MusicDb extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Log.e("Error deleteing author", e.toString());
         }
-
     }
 
     public void deleteSong(long id) {
@@ -183,10 +176,10 @@ public class MusicDb extends SQLiteOpenHelper {
         } catch (SQLException e) {
             Log.e("Error deleteing song", e.toString());
         }
-
     }
 
     public boolean updateListSong(String a, String sn, String stxt, long id, String oldAuthor) {
+        Cursor cursor = querySelectSong(SONG_AUTHOR + "= ?", new String[]{oldAuthor});
         try {
             String sql = "UPDATE " + SONG_TABLE_NAME +
                     " SET " + SONG_NAME + "= ?, " +
@@ -195,9 +188,6 @@ public class MusicDb extends SQLiteOpenHelper {
             Object[] args = new Object[]{sn, stxt, a, id};
             getWritableDatabase().execSQL(sql, args);
             addListAuthor(a);
-
-            Cursor cursor = querySelectSong(SONG_AUTHOR + "= ?", new String[]{oldAuthor});
-            //cursor.moveToFirst();
             if (cursor.getCount() == 0) {
                 deleteAuthor(oldAuthor);
             }
@@ -205,8 +195,8 @@ public class MusicDb extends SQLiteOpenHelper {
             return true;
         } catch (SQLException e) {
             Log.e("Error update song", e.toString());
+            cursor.close();
             return false;
         }
-
     }
 }

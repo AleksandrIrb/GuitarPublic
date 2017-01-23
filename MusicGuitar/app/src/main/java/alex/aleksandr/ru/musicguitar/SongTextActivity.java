@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import alex.aleksandr.ru.musicguitar.DAO.SongText;
+import alex.aleksandr.ru.musicguitar.DTO.SongText;
 
 public class SongTextActivity extends AppCompatActivity {
 
@@ -30,8 +30,6 @@ public class SongTextActivity extends AppCompatActivity {
         db = MusicDb.getInstance(this);
         textView = (TextView) findViewById(R.id.textViewSongText);
         songId = getIntent().getLongExtra(EXTRA_ID_SONG, 0);
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar_song_text);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -47,12 +45,16 @@ public class SongTextActivity extends AppCompatActivity {
         songText = SongText.fromCursor(cursor);
         cursor.close();
         countAuthor = db.querySongByAuthorName(songText.getAuthorName()).getCount();
-
         if (toolbar != null) {
             setTitle(songText.getName());
             toolbar.setSubtitle(songText.getAuthorName());
         }
         textView.setText(songText.getTextSong());
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     @Override
@@ -64,8 +66,7 @@ public class SongTextActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (item.getItemId() == R.id.menu_song_text_edit) {
+        if (id == R.id.menu_song_text_edit) {
             Intent i = new Intent(SongTextActivity.this, EditActivity.class);
             i.putExtra(EditActivity.EXTRA_IS_EDIT, true);
             i.putExtra(EditActivity.EXTRA_SONG_EDIT, songId);

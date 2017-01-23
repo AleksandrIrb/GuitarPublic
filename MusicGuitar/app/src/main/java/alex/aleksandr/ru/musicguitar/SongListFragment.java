@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import alex.aleksandr.ru.musicguitar.DAO.Song;
+import alex.aleksandr.ru.musicguitar.DTO.Song;
 
 
 public class SongListFragment extends Fragment {
@@ -25,6 +25,7 @@ public class SongListFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
     private Cursor cursor;
+    private MusicDb db;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class SongListFragment extends Fragment {
         String searchFilter = getArguments().getString(EXTRA_SEARCH_FILTER_SONG);
         boolean isLand = getArguments().getBoolean(EXTRA_IS_LAND_ORIENTATION_SONG_FRAG);
         View view = inflater.inflate(R.layout.fragment_song, container, false);
-        MusicDb db = MusicDb.getInstance(getActivity());
+        db = MusicDb.getInstance(getActivity());
         if (searchFilter.isEmpty()) {
             cursor = db.querySongByAuthorName(nameAuthor);
         } else {
@@ -113,5 +114,4 @@ public class SongListFragment extends Fragment {
             return cursor.getCount();
         }
     }
-
 }

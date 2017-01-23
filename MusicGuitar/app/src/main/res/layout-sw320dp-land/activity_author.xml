@@ -22,7 +22,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer"
         android:layout_width="match_parent"
@@ -46,7 +45,6 @@
 
         </android.support.design.widget.CoordinatorLayout>
 
-
         <android.support.design.widget.NavigationView
             android:id="@+id/navView"
             android:layout_width="320dp"
@@ -57,9 +55,7 @@
 
         </android.support.design.widget.NavigationView>
 
-
     </android.support.v4.widget.DrawerLayout>
-
 
 </LinearLayout>
 

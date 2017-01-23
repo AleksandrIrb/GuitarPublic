@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import alex.aleksandr.ru.musicguitar.DAO.SongText;
+import alex.aleksandr.ru.musicguitar.DTO.SongText;
 
 
 public class EditActivity extends AppCompatActivity {
@@ -36,13 +36,11 @@ public class EditActivity extends AppCompatActivity {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
         author = (EditText) findViewById(R.id.editNameAuthor);
         songname = (EditText) findViewById(R.id.editNameSong);
         songtext = (EditText) findViewById(R.id.editTextSong);
         Button addInDatabase = (Button) findViewById(R.id.buttonAdd);
         db = MusicDb.getInstance(this);
-
         isEdit = getIntent().getBooleanExtra(EXTRA_IS_EDIT, false);
         id = getIntent().getLongExtra(EXTRA_SONG_EDIT, 0);
 
@@ -65,13 +63,13 @@ public class EditActivity extends AppCompatActivity {
                 String stxt = songtext.getText().toString();
 
                 if (!a.isEmpty() && !sn.isEmpty() && !stxt.isEmpty()) {
-
                     if (isEdit) {
                         boolean isYesUpdate = db.updateListSong(a, sn, stxt, id, oldAuthor);
                         if (isYesUpdate) {
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), R.string.error_added_data, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),
+                                    R.string.error_added_data, Toast.LENGTH_SHORT).show();
                         }
 
                     } else {
@@ -80,12 +78,14 @@ public class EditActivity extends AppCompatActivity {
                         if (isYesAdd) {
                             finish();
                         } else {
-                            Toast.makeText(getApplicationContext(), R.string.error_added_data, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),
+                                    R.string.error_added_data, Toast.LENGTH_SHORT).show();
                         }
                     }
 
                 } else {
-                    Toast.makeText(getApplicationContext(), R.string.warning_added_label, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            R.string.warning_added_label, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -93,11 +93,16 @@ public class EditActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public void onBackPressed() {
+        finish();
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
